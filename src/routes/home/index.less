@@ -1,0 +1,356 @@
+//一些变量
+@import 'utils';
+//for循环生成的 margin、padding、width、height类
+@import 'custom';
+//颜色
+@import 'layout';
+//布局
+@import 'anim';
+
+:root {
+  --color-me: rgb(21, 23, 35);
+  --color-user: rgb(22, 24, 36);
+  --color-message: rgb(21, 21, 21);
+  --color-share-bg: rgb(38, 38, 38);
+  --home-header-height: 44rem;
+  --footer-height: 56rem;
+  --common-header-height: 50rem;
+  --indicator-height: 43rem;
+  --page-padding: 15rem;
+  --main-bg: rgb(21, 23, 36);
+  --active-main-bg: rgb(31, 37, 52);
+  --second-text-color: rgb(186, 186, 187);
+  --second-btn-color: rgb(58, 58, 70);
+  --second-btn-color-tran: rgba(58, 58, 70, 0.4);
+  --line-color: rgb(37, 45, 66);
+  --line-color2: rgb(56, 54, 67);
+  --footer-color: black;
+
+  --primary-btn-color: rgb(252, 47, 86);
+  --disable-primary-btn-color: rgba(252, 47, 86, 0.5);
+
+  --mask-dark: #000000bb;
+  --mask-light: transparent;
+  --mask-white: transparent;
+  --mask-lightgray: rgba(0, 0, 0, 0.25);
+  //消息页面
+  --msg-subpage-card-bg: rgb(28, 30, 43); //二级页面，卡片背景
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  //background: #2e3244;
+  background: var(--main-bg);
+  font-size: 1px;
+  //letter-spacing: .11rem;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+* {
+  user-select: none;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  font-size: 14rem;
+}
+
+@media screen and (min-width: 500px) {
+  #app {
+    width: 500px !important;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.go-enter-from {
+  transform: translate3d(100%, 0, 0);
+}
+
+//最终状态
+.back-enter-to,
+.back-enter-from,
+.go-enter-to,
+.go-leave-from {
+  transform: translate3d(0, 0, 0);
+}
+
+.go-leave-to {
+  transform: translate3d(-100%, 0, 0);
+}
+
+.go-enter-active,
+.go-leave-active,
+.back-enter-active,
+.back-leave-active {
+  transition: all 0.3s;
+}
+
+.back-enter-from {
+  transform: translate3d(-100%, 0, 0);
+}
+
+.back-leave-to {
+  transform: translate3d(100%, 0, 0);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+.test-slide-wrapper {
+  font-size: 14rem;
+  width: 100%;
+  height: 100%;
+  background: black;
+  overflow: hidden;
+
+  .sidebar {
+    touch-action: pan-y;
+    width: 80%;
+    height: calc(var(--vh, 1vh) * 100);
+    overflow: auto;
+    background: rgb(22, 22, 22);
+    padding: 10rem;
+    padding-bottom: 20rem;
+    box-sizing: border-box;
+
+    & > .header {
+      font-size: 16rem;
+      display: flex;
+      color: white;
+      justify-content: space-between;
+      align-items: center;
+
+      .right {
+        border-radius: 20rem;
+        padding: 8rem 15rem;
+        background: rgb(36, 36, 36);
+        display: flex;
+        align-items: center;
+        font-size: 14rem;
+        gap: 10rem;
+
+        svg {
+          font-size: 18rem;
+        }
+      }
+    }
+
+    .card {
+      margin-top: 10rem;
+      border-radius: 12rem;
+      padding: 15rem;
+      background: rgb(29, 29, 29);
+
+      .header {
+        margin-bottom: 8rem;
+        font-size: 14rem;
+        display: flex;
+        color: white;
+        justify-content: space-between;
+        align-items: center;
+
+        .right {
+          display: flex;
+          align-items: center;
+          font-size: 12rem;
+          gap: 4rem;
+          color: gray;
+
+          svg {
+            font-size: 16rem;
+          }
+        }
+      }
+
+      .content {
+        color: white;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+
+        .item {
+          min-height: 20vw;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          font-size: 14rem;
+          gap: 8rem;
+
+          svg {
+            font-size: 28rem;
+          }
+
+          .xcx {
+            border-radius: 12rem;
+            width: 50rem;
+            height: 50rem;
+          }
+        }
+
+        .avatar {
+          height: 25vw;
+
+          img {
+            border-radius: 50%;
+            width: 50rem;
+          }
+        }
+      }
+    }
+  }
+
+  .slide-content {
+    width: 100%;
+    height: 100%;
+  }
+}
+// 包裹栏
+.indicator-bullets {
+  position: absolute;
+  bottom: 10rem;
+  z-index: 2;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  gap: 7rem;
+
+  .bullet {
+    @width: 5rem;
+    width: @width;
+    height: @width;
+    border-radius: 50%;
+    background: var(--second-btn-color);
+
+    &.active {
+      background: white;
+    }
+  }
+}
+// 主题内容
+.slide-item {
+  height: 100%;
+  width: 100%;
+  flex-shrink: 0;
+  position: relative;
+}
+// 头部标签样式
+.indicator-home {
+  position: absolute;
+  font-size: 16rem;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  color: white;
+  height: var(--home-header-height);
+  transition: all 0.3s;
+  font-weight: bold;
+
+  .notice {
+    opacity: 0;
+    top: 0;
+    position: absolute;
+    width: 100vw;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .loading {
+    opacity: 0;
+    top: 7rem;
+    right: 7rem;
+    position: absolute;
+  }
+
+  .toolbar {
+    z-index: 2;
+    position: relative;
+    color: white;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 0 15rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .tab-ctn {
+      width: 80%;
+      position: relative;
+
+      .tabs {
+        display: flex;
+        justify-content: space-between;
+
+        .tab {
+          transition: color 0.3s;
+          color: rgba(white, 0.7);
+          position: relative;
+          font-size: 17rem;
+          cursor: pointer;
+
+          .tab1-img {
+            position: absolute;
+            @width: 12rem;
+            width: @width;
+            height: @width;
+            margin-left: 4rem;
+            transition: all 0.3s;
+            // margin-top: 7rem;
+          }
+
+          .tab2-img {
+            position: absolute;
+            height: 15rem;
+            left: 24rem;
+            top: -5rem;
+          }
+
+          &.active {
+            color: white;
+          }
+        }
+      }
+
+      .indicator {
+        //transition: left .3s;
+        position: absolute;
+        bottom: -6rem;
+        height: 2.6rem;
+        width: 26rem;
+        //width: calc(100% / 5);
+        background: #fff;
+        border-radius: 5rem;
+      }
+    }
+
+    .search {
+      color: white;
+      font-size: 24rem;
+    }
+  }
+
+  .mask {
+    top: 0;
+    position: absolute;
+    width: 100vw;
+    height: calc(var(--vh, 1vh) * 100);
+    background: #00000066;
+  }
+}

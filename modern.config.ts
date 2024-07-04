@@ -10,4 +10,7 @@ export default defineConfig({
       bundler: 'experimental-rspack',
     }),
   ],
+  source: {
+    preEntry: './src/polyfill.ts',
+  },
 });
