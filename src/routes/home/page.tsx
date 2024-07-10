@@ -561,7 +561,11 @@ const Index = () => {
     const videoList = state.map(item => {
       return (
         <SlideItem key={item.aweme_id}>
-          <BaseVideo videoUrl={item?.video.play_addr.url_list[0]} />,
+          <BaseVideo
+            videoUrl={item?.video.play_addr.url_list[0]}
+            avatarUrl={item?.author.avatar_168x168?.url_list[0]}
+          />
+          ,
         </SlideItem>
       );
     });
