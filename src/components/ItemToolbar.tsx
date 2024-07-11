@@ -1,17 +1,19 @@
-import { FC } from 'react';
-import './ItemToolbar.less';
+import type { FC } from 'react';
+import clsx from 'clsx';
+import styles from './ItemToolbar.module.less';
 import love from './img/love.svg';
 import loved from './img/loved.svg';
 import shareWhiteFull from './img/share-white-full.png';
 import addLight from './img/add-light.png';
 import okRed from './img/ok-red.png';
+import BaseMusic from './BaseMusic';
 
 interface ItemToolbarProps {
   avatarUrl: string;
 }
 const ItemToolbar: FC<ItemToolbarProps> = ({ avatarUrl }) => {
   return (
-    <div className="toolbar mb1r">
+    <div className={clsx(styles.toolbar, 'mb1r')}>
       {/* 头像部分 */}
       <div className="avatar-ctn mb2r">
         <img src={avatarUrl} alt="" className="avatar" />
@@ -23,10 +25,10 @@ const ItemToolbar: FC<ItemToolbarProps> = ({ avatarUrl }) => {
       {/* 点赞部分 */}
       <div className="love mb2r">
         <div>
-          <img src={love} className="love-image" />
-          <img src={loved} className="love-image" />
-          <span>1212 万</span>
+          <img src={love} className="love-image" alt="" />
+          {/* <img src={loved} className="love-image" alt="" /> */}
         </div>
+        <span>1212 万</span>
       </div>
       {/* 消息部分 */}
       <div className="message mb2r">
@@ -74,6 +76,7 @@ const ItemToolbar: FC<ItemToolbarProps> = ({ avatarUrl }) => {
         <img src={shareWhiteFull} alt="" className="share-image" />
         <span>17.3万</span>
       </div>
+      <BaseMusic />
     </div>
   );
 };

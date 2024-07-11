@@ -1,11 +1,4 @@
-import React, { useContext } from 'react';
-import {
-  Html,
-  Root,
-  Head,
-  Body,
-  DocumentContext,
-} from '@modern-js/runtime/document';
+import { Html, Root, Head, Body } from '@modern-js/runtime/document';
 
 export default function Document(): React.ReactElement {
   return (

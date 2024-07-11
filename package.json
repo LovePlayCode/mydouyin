@@ -30,11 +30,14 @@
     "@emotion/styled": "^11.11.5",
     "@material-ui/core": "5.0.0-beta.5",
     "@modern-js/runtime": "2.54.6",
+    "ahooks": "^3.8.0",
     "clsx": "^2.1.1",
     "react": "~18.2.0",
-    "react-dom": "~18.2.0"
+    "react-dom": "~18.2.0",
+    "valtio": "^1.13.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.8.3",
     "@modern-js-app/eslint-config": "2.54.6",
     "@modern-js/app-tools": "2.54.6",
     "@modern-js/eslint-config": "2.54.6",

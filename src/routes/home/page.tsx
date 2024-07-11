@@ -577,7 +577,7 @@ const Index = () => {
         <div className="slide horizontal">
           <div className="slide-list">
             {/* 侧边栏 */}
-            <div className="sidebar"></div>
+            <div className="sidebar" style={{ display: 'none' }}></div>
             {/* 主题内容 */}
             <div className="slide-item">
               <div className="indicator-home">
