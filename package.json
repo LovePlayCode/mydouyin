@@ -32,6 +32,7 @@
     "@modern-js/runtime": "2.54.6",
     "ahooks": "^3.8.0",
     "clsx": "^2.1.1",
+    "mitt": "^3.0.1",
     "react": "~18.2.0",
     "react-dom": "~18.2.0",
     "valtio": "^1.13.2"
