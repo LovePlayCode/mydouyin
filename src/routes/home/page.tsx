@@ -1,14 +1,12 @@
 import { IconAlignLeft, IconSearch } from '@arco-design/web-react/icon';
 import './index.less';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
-import { createRoot } from 'react-dom/client';
 import data from './data.json';
 import Slide0 from './Slide0';
 import SlideHorizontal from '@/components/SlideHorizontal';
-import BaseVideo from '@/components/BaseVideo';
-import SlideItem from '@/components/SlideItem';
-import SlideList from '@/components/SlideList';
+
+import BaseFooter from '@/components/BaseFooter';
 
 const Index = () => {
   const [state, setState] = useState(data);
@@ -84,6 +82,7 @@ const Index = () => {
               <SlideHorizontal className="first-horizontal-item">
                 <Slide0 />
               </SlideHorizontal>
+              <BaseFooter />
             </div>
           </div>
         </div>

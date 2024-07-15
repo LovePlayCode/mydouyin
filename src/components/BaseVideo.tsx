@@ -48,10 +48,6 @@ const BaseVideo: FC<BaseVideoProps> = ({ videoUrl, avatarUrl, isplay }) => {
     setState({
       playX: (baseVideoRef.current.currentTime - 1) * baseVideoRef.current.step,
     });
-    console.log(
-      'baseVideoRef==',
-      (baseVideoRef.current.currentTime - 1) * baseVideoRef.current.step,
-    );
   };
   const play = () => {
     if (!videoEl.current) {

@@ -59,7 +59,6 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     eventRelated.current.isDown && (eventRelated.current.isMove = true);
   };
   const up = (e: React.PointerEvent<HTMLDivElement>) => {
-    console.log('eventRelated==', eventRelated);
     if (!eventRelated.current.isDown) {
       return;
     }
