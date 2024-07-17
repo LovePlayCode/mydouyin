@@ -1,16 +1,46 @@
 import { useRef, type FC } from 'react';
 import SlideItem from './SlideItem';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
+import { sildeTouchStart, slideTouchMove } from '@/utils/slide';
+import { SlideEnum } from '@/common/contains';
 
 interface SlideVerticalInfiniteProps {
   render: (item: any) => React.ReactNode;
   list: any[];
 }
+export interface MouseEventState {
+  isDbClick: boolean;
+  clickTimer: number;
+  dbClickTimer: number;
+  lastClickTime: number;
+  isDown: boolean;
+  isMove: boolean;
+  checkTime: number;
+  dbCheckCancelTime: number;
+  start: {
+    x: number;
+    y: number;
+    time: number;
+  };
+  move: {
+    x: number;
+    y: number;
+  };
+  wrapper: {
+    width: number;
+    height: number;
+    childrenLength: number;
+  };
+  needCheck: boolean;
+  judgeValue: number;
+  next: boolean;
+  type: SlideEnum;
+}
 const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
   render,
   list,
 }) => {
-  const eventRelated = useRef({
+  const eventRelated = useRef<MouseEventState>({
     isDbClick: false,
     clickTimer: 0,
     dbClickTimer: -1,
@@ -19,13 +49,30 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     isMove: false,
     checkTime: 200,
     dbCheckCancelTime: 500,
+    // 记录滑动时间等
+    start: {
+      x: 0,
+      y: 0,
+      time: 0,
+    },
+    wrapper: {
+      width: 390,
+      height: 788,
+      childrenLength: 0,
+    },
+    move: { x: 0, y: 0 },
+    needCheck: true,
+    judgeValue: 20,
+    next: false,
+    type: SlideEnum.VERTICAL_INFINITE,
   });
-
+  // 拖动的元素
+  const dropEl = useRef<HTMLDivElement>(null);
   // 双击事件
   const dbClick = (e: React.PointerEvent<HTMLDivElement>) => {};
   const check = (e: React.PointerEvent<HTMLDivElement>) => {
     const { current } = eventRelated;
-    debugger;
+
     // 如果是双击
     if (eventRelated.current.isDbClick) {
       clearTimeout(eventRelated.current.dbClickTimer);
@@ -68,15 +115,32 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     eventRelated.current.isMove = false;
     eventRelated.current.isDown = false;
   };
+  // 开始滑动
+  const pointStart = (e: any) => {
+    console.log('e==', e);
+    sildeTouchStart(e?.nativeEvent, dropEl?.current!, eventRelated.current);
+  };
+  // 滑动过程
+  const pointMove = (e: any) => {
+    slideTouchMove(e?.nativeEvent, dropEl?.current!, eventRelated.current);
+  };
   return (
     <>
       <div
         onPointerDown={pointerDown}
-        onPointerMove={pointerMove}
+        onPointerMove={pointMove}
+        onTouchStart={e => {
+          console.log('e==2', e);
+        }}
         onPointerUp={up}
         className="slide slide-infinite"
       >
-        <div className="slide-list flex-direction-column">
+        <div
+          onPointerDown={pointStart}
+          onPointerMove={pointerMove}
+          ref={dropEl}
+          className="slide-list flex-direction-column"
+        >
           {list.map(item => {
             return <SlideItem key={item}>{render(item)}</SlideItem>;
           })}
