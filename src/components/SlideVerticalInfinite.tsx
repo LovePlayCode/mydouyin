@@ -1,4 +1,5 @@
 import { useRef, type FC } from 'react';
+import { useSetState } from 'ahooks';
 import SlideItem from './SlideItem';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 import { sildeTouchStart, slideTouchMove } from '@/utils/slide';
@@ -7,6 +8,7 @@ import { SlideEnum } from '@/common/contains';
 interface SlideVerticalInfiniteProps {
   render: (item: any) => React.ReactNode;
   list: any[];
+  index?: number;
 }
 export interface MouseEventState {
   isDbClick: boolean;
@@ -35,10 +37,12 @@ export interface MouseEventState {
   judgeValue: number;
   next: boolean;
   type: SlideEnum;
+  localIndex: number;
 }
 const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
   render,
   list,
+  index,
 }) => {
   const eventRelated = useRef<MouseEventState>({
     isDbClick: false,
@@ -65,6 +69,7 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     judgeValue: 20,
     next: false,
     type: SlideEnum.VERTICAL_INFINITE,
+    localIndex: index || 0,
   });
   // 拖动的元素
   const dropEl = useRef<HTMLDivElement>(null);
@@ -122,22 +127,36 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
   };
   // 滑动过程
   const pointMove = (e: any) => {
-    slideTouchMove(e?.nativeEvent, dropEl?.current!, eventRelated.current);
+    slideTouchMove(
+      e?.nativeEvent,
+      dropEl?.current as HTMLDivElement,
+      eventRelated.current,
+      canNext,
+    );
   };
+  // 判断是否可以下一个  isNext 代表从头到尾或者从尾到头
+  const canNext = (state: MouseEventState, isNext: boolean) => {
+    return isNext;
+  };
+  // const pointerUp = (e: PointerEventHandler<HTMLDivElement>) => {
+  //   const isNext = eventRelated.current.move.y < 0;
+  //   if (!isNext) {
+  //   } else {
+  //   }
+  // };
+
   return (
     <>
       <div
         onPointerDown={pointerDown}
         onPointerMove={pointMove}
-        onTouchStart={e => {
-          console.log('e==2', e);
-        }}
         onPointerUp={up}
         className="slide slide-infinite"
       >
         <div
           onPointerDown={pointStart}
           onPointerMove={pointerMove}
+          // onPointerUp={pointerUp}
           ref={dropEl}
           className="slide-list flex-direction-column"
         >
