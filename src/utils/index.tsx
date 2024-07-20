@@ -1,4 +1,3 @@
-import React from 'react';
 import BaseVideo from '../components/BaseVideo';
 
 export function slideItemRender(props: any) {

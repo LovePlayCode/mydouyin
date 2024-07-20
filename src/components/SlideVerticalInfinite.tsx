@@ -2,13 +2,19 @@ import { useRef, type FC } from 'react';
 import { useSetState } from 'ahooks';
 import SlideItem from './SlideItem';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
-import { sildeTouchStart, slideTouchMove } from '@/utils/slide';
-import { SlideEnum } from '@/common/contains';
+import {
+  sildeTouchStart,
+  slideReset,
+  slideTouchEnd,
+  slideTouchMove,
+} from '@/utils/slide';
+import { SlideEnum, SwiperDirectionEnum } from '@/common/contains';
 
 interface SlideVerticalInfiniteProps {
   render: (item: any) => React.ReactNode;
   list: any[];
   index?: number;
+  virtualTotal?: number;
 }
 export interface MouseEventState {
   isDbClick: boolean;
@@ -43,6 +49,7 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
   render,
   list,
   index,
+  virtualTotal = 5,
 }) => {
   const eventRelated = useRef<MouseEventState>({
     isDbClick: false,
@@ -68,7 +75,7 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     needCheck: true,
     judgeValue: 20,
     next: false,
-    type: SlideEnum.VERTICAL_INFINITE,
+    type: SlideEnum.VERTICAL,
     localIndex: index || 0,
   });
   // 拖动的元素
@@ -122,7 +129,6 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
   };
   // 开始滑动
   const pointStart = (e: any) => {
-    console.log('e==', e);
     sildeTouchStart(e?.nativeEvent, dropEl?.current!, eventRelated.current);
   };
   // 滑动过程
@@ -135,15 +141,46 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     );
   };
   // 判断是否可以下一个  isNext 代表从头到尾或者从尾到头
-  const canNext = (state: MouseEventState, isNext: boolean) => {
-    return isNext;
+  const canNext = (state: MouseEventState, direction: SwiperDirectionEnum) => {
+    // 如果是第一个并且是往上滑，不允许滑动
+    return !(
+      (state.localIndex === 0 && direction === SwiperDirectionEnum.Down) ||
+      (eventRelated.current.localIndex === list?.length - 1 &&
+        direction === SwiperDirectionEnum.Up)
+    );
   };
-  // const pointerUp = (e: PointerEventHandler<HTMLDivElement>) => {
-  //   const isNext = eventRelated.current.move.y < 0;
-  //   if (!isNext) {
-  //   } else {
-  //   }
-  // };
+  const pointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    const isNext = eventRelated.current.move.y < 0;
+    if (eventRelated.current.localIndex === 0 && !isNext) {
+      return;
+    }
+    slideTouchEnd(e?.nativeEvent, eventRelated.current, canNext, () => {
+      // 算出一半的距离
+      const half = (virtualTotal - 1) / 2;
+      // 如果当前长度大于一半的长度
+      if (list.length > virtualTotal) {
+        console.log('123');
+      } else {
+        console.log('没大于');
+      }
+    });
+
+    // 重置
+    slideReset(
+      e?.nativeEvent,
+      dropEl.current as HTMLDivElement,
+      eventRelated.current,
+    );
+    // 重置对应变量
+    eventRelated.current.start.x = 0;
+    eventRelated.current.start.y = 0;
+    eventRelated.current.start.time = 0;
+    eventRelated.current.move.x = 0;
+    eventRelated.current.move.y = 0;
+    eventRelated.current.next = false;
+    eventRelated.current.needCheck = true;
+    eventRelated.current.isDown = false;
+  };
 
   return (
     <>
@@ -156,12 +193,12 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
         <div
           onPointerDown={pointStart}
           onPointerMove={pointerMove}
-          // onPointerUp={pointerUp}
+          onPointerUp={pointerUp}
           ref={dropEl}
           className="slide-list flex-direction-column"
         >
-          {list.map(item => {
-            return <SlideItem key={item}>{render(item)}</SlideItem>;
+          {list.map((item, index) => {
+            return <SlideItem key={index}>{render(item)}</SlideItem>;
           })}
         </div>
       </div>

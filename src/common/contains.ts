@@ -15,3 +15,10 @@ export enum SlideEnum {
   VERTICAL = 'VERTICAL',
   VERTICAL_INFINITE = 'VERTICAL_INFINITE',
 }
+
+export enum SwiperDirectionEnum {
+  Up = 'up',
+  Down = 'down',
+  Left = 'left',
+  Right = 'Right',
+}

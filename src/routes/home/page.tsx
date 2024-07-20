@@ -1,39 +1,18 @@
 import { IconAlignLeft, IconSearch } from '@arco-design/web-react/icon';
 import './index.less';
-import { useRef, useState } from 'react';
-
-import data from './data.json';
 import Slide0 from './Slide0';
 import SlideHorizontal from '@/components/SlideHorizontal';
 
 import BaseFooter from '@/components/BaseFooter';
 
 const Index = () => {
-  const [state, setState] = useState(data);
-  const slideListEl = useRef<HTMLDivElement>(null);
-  // useEffect(() => {
-  //   if (!state.length) {
-  //     return;
-  //   }
-  //   // 清空内容
-  //   slideListEl.current!.innerHTML = '';
-
-  //   const videoList = state.map(item => {
-  //     return (
-  //       <SlideItem key={item.aweme_id}>
-  //         <SlideList data={state} />
-  //       </SlideItem>
-  //     );
-  //   });
-  //   createRoot(slideListEl.current!).render(<>{videoList}</>);
-  // }, []);
   return (
     <>
       <div className="test-slide-wrapper" id="home-index">
         <div className="slide horizontal">
           <div className="slide-list">
             {/* 侧边栏 */}
-            <div className="sidebar" style={{ display: 'none' }}></div>
+            <div className="sidebar" style={{ display: 'none' }} />
             {/* 主题内容 */}
             <div className="slide-item">
               <div className="indicator-home">
