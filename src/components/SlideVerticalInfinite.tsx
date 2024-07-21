@@ -1,5 +1,5 @@
 import { useRef, type FC } from 'react';
-import { useMount, useSetState, useUnmount } from 'ahooks';
+import { useMount, useUnmount } from 'ahooks';
 import SlideItem from './SlideItem';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 import {
@@ -9,6 +9,9 @@ import {
   slideTouchMove,
 } from '@/utils/slide';
 import { SlideEnum, SwiperDirectionEnum } from '@/common/contains';
+import { random } from '@/utils';
+import loved from '@/components/img/loved.svg';
+import Dom from '@/utils/dom';
 
 interface SlideVerticalInfiniteProps {
   render: (
@@ -28,6 +31,7 @@ export interface MouseEventState {
   clickTimer: number;
   dbClickTimer: number;
   lastClickTime: number;
+
   isDown: boolean;
   isMove: boolean;
   checkTime: number;
@@ -58,6 +62,9 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
   index,
   virtualTotal = 5,
 }) => {
+  // 父元素 dom 实例
+  const verticalRef = useRef<HTMLDivElement>(null);
+  // 关于事件的一些变量
   const eventRelated = useRef<MouseEventState>({
     isDbClick: false,
     clickTimer: 0,
@@ -66,6 +73,7 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     isDown: false,
     isMove: false,
     checkTime: 200,
+
     dbCheckCancelTime: 500,
     // 记录滑动时间等
     start: {
@@ -100,8 +108,22 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
   // 拖动的元素
   const dropEl = useRef<HTMLDivElement>(null);
   // 双击事件
-  const dbClick = (e: React.PointerEvent<HTMLDivElement>) => {};
-  const check = (e: React.PointerEvent<HTMLDivElement>) => {
+  const dbClick = (e: PointerEvent) => {
+    console.log('触发...');
+    const id = `a${Date.now()}`;
+    const elWidth = 80;
+    const rotate = random(0, 1);
+    const template = `<img class="${
+      rotate ? 'left love-dbclick' : 'right love-dbclick'
+    }" id="${id}" src="${loved}">`;
+    const el = new Dom().create(template);
+    el.css({ top: e.y - elWidth - 40, left: e.x - elWidth / 2 });
+    new Dom(verticalRef.current).append(el);
+    setTimeout(() => {
+      new Dom(`#${id}`).remove();
+    }, 1000);
+  };
+  const check = (e: PointerEvent) => {
     const { current } = eventRelated;
 
     // 如果是双击
@@ -143,11 +165,12 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
       return;
     }
     if (!eventRelated.current.isMove) {
-      check(e);
+      check(e.nativeEvent);
     }
     eventRelated.current.isMove = false;
     eventRelated.current.isDown = false;
   };
+
   // 开始滑动
   const pointStart = (e: any) => {
     console.log('eventRelatedPointStart==', eventRelated.current.isDown);
@@ -213,6 +236,7 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
         onPointerMove={pointMove}
         onPointerUp={up}
         className="slide slide-infinite"
+        ref={verticalRef}
       >
         <div
           onPointerDown={pointStart}

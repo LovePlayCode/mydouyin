@@ -24,6 +24,17 @@ export function slideItemRender(props: any) {
   };
 }
 /**
+ *
+ * @param min 最小
+ * @param max 最大
+ * @returns
+ */
+export function random(min: number, max: number) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // 包含最小值和最大值
+}
+/**
  * 解析数字
  * @param num 数字
  * @returns 返回解析结果

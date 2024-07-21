@@ -2,7 +2,6 @@ import { type FC, useRef } from 'react';
 import './BaseVideo.less';
 import { useSetState } from 'ahooks';
 import { IconPlayArrowFill } from '@arco-design/web-react/icon';
-import Item from '@arco-design/web-react/es/Breadcrumb/item';
 import ItemToolbar from './ItemToolbar';
 import ItemDesc from './ItemDesc';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
