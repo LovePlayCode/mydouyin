@@ -1,18 +1,30 @@
-import { type FC, useEffect, useRef, useState } from 'react';
+import { type FC, useRef } from 'react';
 import './BaseVideo.less';
-import { useMount, useSetState } from 'ahooks';
+import { useSetState } from 'ahooks';
 import { IconPlayArrowFill } from '@arco-design/web-react/icon';
+import Item from '@arco-design/web-react/es/Breadcrumb/item';
 import ItemToolbar from './ItemToolbar';
 import ItemDesc from './ItemDesc';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 import { MediaEnum } from '@/common/contains';
+import type { AwemeData } from '@/common/data';
 
 interface BaseVideoProps {
   videoUrl: string;
-  avatarUrl: string;
+
   isplay: boolean;
+  position?: {
+    uniqueId: string;
+    index: number;
+  };
+  item: AwemeData;
 }
-const BaseVideo: FC<BaseVideoProps> = ({ videoUrl, avatarUrl, isplay }) => {
+const BaseVideo: FC<BaseVideoProps> = ({
+  videoUrl,
+  item,
+  isplay,
+  position,
+}) => {
   const [state, setState] = useSetState({
     status: isplay ? MediaEnum.PLAY : MediaEnum.PAUSE,
     playX: 0,
@@ -71,13 +83,25 @@ const BaseVideo: FC<BaseVideoProps> = ({ videoUrl, avatarUrl, isplay }) => {
     videoEl.current?.pause();
   };
 
-  const click = ({ type }: { type: EVENTKEYENUM }) => {
-    const { status } = state ?? {};
-    if (type === EVENTKEYENUM.ITEM_TOGGLE) {
-      if (status === MediaEnum.PLAY) {
-        pause();
-      } else {
-        play();
+  const click = ({ type, index }: { type: EVENTKEYENUM; index: number }) => {
+    if (position?.index === index) {
+      const { status } = state ?? {};
+      if (type === EVENTKEYENUM.ITEM_TOGGLE) {
+        if (status === MediaEnum.PLAY) {
+          pause();
+        } else {
+          play();
+        }
+      }
+      if (videoEl.current) {
+        if (type === EVENTKEYENUM.ITEM_STOP) {
+          videoEl.current.currentTime = 0;
+          pause();
+        }
+        if (type === EVENTKEYENUM.ITEM_PLAY) {
+          videoEl.current.currentTime = 0;
+          play();
+        }
       }
     }
   };
@@ -100,7 +124,7 @@ const BaseVideo: FC<BaseVideoProps> = ({ videoUrl, avatarUrl, isplay }) => {
       )}
       <div className="float">
         <div className="normal">
-          <ItemToolbar avatarUrl={avatarUrl} />
+          <ItemToolbar data={item} />
           <ItemDesc />
         </div>
         {/* 进度条 */}

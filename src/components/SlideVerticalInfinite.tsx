@@ -1,5 +1,5 @@
 import { useRef, type FC } from 'react';
-import { useSetState } from 'ahooks';
+import { useMount, useSetState, useUnmount } from 'ahooks';
 import SlideItem from './SlideItem';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 import {
@@ -11,7 +11,14 @@ import {
 import { SlideEnum, SwiperDirectionEnum } from '@/common/contains';
 
 interface SlideVerticalInfiniteProps {
-  render: (item: any) => React.ReactNode;
+  render: (
+    item: any,
+    isPlay: boolean,
+    position: {
+      uniqueId: string;
+      index: number;
+    },
+  ) => React.ReactNode;
   list: any[];
   index?: number;
   virtualTotal?: number;
@@ -78,6 +85,18 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     type: SlideEnum.VERTICAL,
     localIndex: index || 0,
   });
+  const click = () => {
+    emitter.emit(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, {
+      type: EVENTKEYENUM.ITEM_TOGGLE,
+      index: eventRelated.current.localIndex,
+    });
+  };
+  useMount(() => {
+    emitter.on(EVENTKEYENUM.SINGLE_CLICK, click);
+  });
+  useUnmount(() => {
+    emitter.off(EVENTKEYENUM.SINGLE_CLICK, click);
+  });
   // 拖动的元素
   const dropEl = useRef<HTMLDivElement>(null);
   // 双击事件
@@ -113,11 +132,13 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
   };
   const pointerDown = () => {
     eventRelated.current.isDown = true;
+    console.log('eventRelatedDown==', eventRelated.current.isDown);
   };
   const pointerMove = () => {
     eventRelated.current.isDown && (eventRelated.current.isMove = true);
   };
   const up = (e: React.PointerEvent<HTMLDivElement>) => {
+    console.log('eventRelatedUp==', eventRelated.current.isDown);
     if (!eventRelated.current.isDown) {
       return;
     }
@@ -129,10 +150,12 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
   };
   // 开始滑动
   const pointStart = (e: any) => {
+    console.log('eventRelatedPointStart==', eventRelated.current.isDown);
     sildeTouchStart(e?.nativeEvent, dropEl?.current!, eventRelated.current);
   };
   // 滑动过程
   const pointMove = (e: any) => {
+    console.log('eventRelatedPointMove==', eventRelated.current.isDown);
     slideTouchMove(
       e?.nativeEvent,
       dropEl?.current as HTMLDivElement,
@@ -150,6 +173,7 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     );
   };
   const pointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    console.log('eventRelatedPointPointerUp==', eventRelated.current.isDown);
     const isNext = eventRelated.current.move.y < 0;
     if (eventRelated.current.localIndex === 0 && !isNext) {
       return;
@@ -198,7 +222,14 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
           className="slide-list flex-direction-column"
         >
           {list.map((item, index) => {
-            return <SlideItem key={index}>{render(item)}</SlideItem>;
+            return (
+              <SlideItem key={index}>
+                {render(item, index === eventRelated.current.localIndex, {
+                  uniqueId: 'home',
+                  index,
+                })}
+              </SlideItem>
+            );
           })}
         </div>
       </div>

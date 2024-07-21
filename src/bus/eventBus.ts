@@ -26,11 +26,13 @@ export enum EVENTKEYENUM {
   TOGGLE_CURRENT_VIDEO = 'TOGGLE_CURRENT_VIDEO',
   SHOW_AUDIO_CALL = 'SHOW_AUDIO_CALL',
 }
+export type SingleClickBroadcastParams = {
+  type: EVENTKEYENUM;
+  index: number;
+};
 export type Events = {
   [EVENTKEYENUM.SINGLE_CLICK]: string;
-  [EVENTKEYENUM.SINGLE_CLICK_BROADCAST]: {
-    type: EVENTKEYENUM;
-  };
+  [EVENTKEYENUM.SINGLE_CLICK_BROADCAST]: SingleClickBroadcastParams;
 };
 const emitter = mitt<Events>();
 

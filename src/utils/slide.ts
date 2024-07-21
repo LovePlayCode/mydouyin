@@ -1,12 +1,12 @@
-import type { PointerEventHandler } from 'react';
 import { _css } from './dom';
+import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 import { SlideEnum, SwiperDirectionEnum } from '@/common/contains';
 import type { MouseEventState } from '@/components/SlideVerticalInfinite';
 
 /**
  * 检查是否有 PointerEvent 事件
  */
-export function checkEvent(e: any) {
+export function checkEvent(e: PointerEvent) {
   const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
   if (!isMobile || (isMobile && e instanceof PointerEvent)) {
     return true;
@@ -17,7 +17,11 @@ export function checkEvent(e: any) {
 /**
  * 开始滑动 slideTouchStart
  */
-export function sildeTouchStart(e: any, el: HTMLDivElement, state: any) {
+export function sildeTouchStart(
+  e: PointerEvent,
+  el: HTMLDivElement,
+  state: MouseEventState,
+) {
   if (!checkEvent(e)) {
     return;
   }
@@ -131,6 +135,8 @@ export function slideTouchEnd(
       }
       // 3、若不在上述两种情况，那么只需要判断时间即可
       if (gapTime < 150) {
+        // TODO: 优化逻辑
+        const oldIndex = state.localIndex;
         if (
           direction === SwiperDirectionEnum.Left ||
           direction === SwiperDirectionEnum.Up
@@ -139,6 +145,17 @@ export function slideTouchEnd(
         } else {
           state.localIndex--;
         }
+        // 进行回调，触发事件
+        emitter.emit(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, {
+          type: EVENTKEYENUM.ITEM_PLAY,
+          index: state.localIndex,
+        });
+        // 暂停上一个动画
+        emitter.emit(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, {
+          type: EVENTKEYENUM.ITEM_STOP,
+          index: oldIndex,
+        });
+        // 下次刷新之际取消回调。
         nextCb?.(direction);
       }
     }
