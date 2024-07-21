@@ -7,6 +7,7 @@ import ItemDesc from './ItemDesc';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 import { MediaEnum } from '@/common/contains';
 import type { AwemeData } from '@/common/data';
+import { _css } from '@/utils/dom';
 
 interface BaseVideoProps {
   videoUrl: string;
@@ -27,6 +28,7 @@ const BaseVideo: FC<BaseVideoProps> = ({
   const [state, setState] = useSetState({
     status: isplay ? MediaEnum.PLAY : MediaEnum.PAUSE,
     playX: 0,
+    iscommentVisible: true,
   });
 
   const baseVideoRef = useRef({
@@ -104,8 +106,24 @@ const BaseVideo: FC<BaseVideoProps> = ({
       }
     }
   };
-  emitter.on(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, click);
 
+  /**
+   * 要展示的菜单
+   * @param id 展示菜单的 id
+   */
+  const onOpenComments = (id: string) => {
+    if (id === item.aweme_id) {
+      _css(videoEl.current, 'transition-duration', '300ms');
+      _css(videoEl.current, 'height', 'calc(var(--vh, 1vh) * 30)');
+    }
+    // 关闭评论组件
+    // baseVideoRef.current.commentVisible = false;
+    setState({
+      iscommentVisible: false,
+    });
+  };
+  emitter.on(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, click);
+  emitter.on(EVENTKEYENUM.OPEN_COMMENTS, onOpenComments);
   return (
     <div className="video-wrapper">
       <video
@@ -123,8 +141,12 @@ const BaseVideo: FC<BaseVideoProps> = ({
       )}
       <div className="float">
         <div className="normal">
-          <ItemToolbar data={item} />
-          <ItemDesc />
+          {state.iscommentVisible && (
+            <>
+              <ItemToolbar data={item} />
+              <ItemDesc data={item} />
+            </>
+          )}
         </div>
         {/* 进度条 */}
         <div className="progress" ref={progressEl}>

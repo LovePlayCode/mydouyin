@@ -1,12 +1,17 @@
 import clsx from 'clsx';
+import type { FC } from 'react';
 import styles from './ItemDesc.module.less';
+import type { AwemeData } from '@/common/data';
 
-const ItemDesc = () => {
+interface ItemDescProps {
+  data: AwemeData;
+}
+const ItemDesc: FC<ItemDescProps> = ({ data }) => {
   return (
     <div className={clsx(styles['item-desc'], 'ml1r', 'mb1r')}>
       <div className="content">
-        <div className="name mb1r f18 fb">@我是香秀🐂🍺</div>
-        <div className="description">你说爱像云，要自在漂浮才美丽</div>
+        <div className="name mb1r f18 fb">@{data.author.nickname}</div>
+        <div className="description">{data.desc}</div>
       </div>
     </div>
   );

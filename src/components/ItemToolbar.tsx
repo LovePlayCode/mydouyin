@@ -9,11 +9,15 @@ import okRed from './img/ok-red.png';
 import BaseMusic from './BaseMusic';
 import type { AwemeData } from '@/common/data';
 import { _formatNumber } from '@/utils';
+import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 
 interface ItemToolbarProps {
   data: AwemeData;
 }
 const ItemToolbar: FC<ItemToolbarProps> = ({ data }) => {
+  const showComments = () => {
+    emitter.emit(EVENTKEYENUM.OPEN_COMMENTS, data.aweme_id);
+  };
   return (
     <div className={clsx(styles.toolbar, 'mb1r')}>
       {/* 头像部分 */}
@@ -42,7 +46,8 @@ const ItemToolbar: FC<ItemToolbarProps> = ({ data }) => {
         <span>{_formatNumber(data.statistics.digg_count)}</span>
       </div>
       {/* 消息部分 */}
-      <div className="message mb2r">
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+      <div className="message mb2r" onClick={showComments}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           xmlnsXlink="http://www.w3.org/1999/xlink"

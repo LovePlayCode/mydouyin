@@ -1,0 +1,293 @@
+.title {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40rem;
+  padding: 0 15rem;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10rem 10rem 0 0;
+
+  .num {
+    width: 100%;
+    position: absolute;
+    font-size: 12rem;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .right {
+    display: flex;
+    gap: 12rem;
+    position: relative;
+    z-index: 9;
+
+    svg {
+      color: #000;
+      background: rgb(242, 242, 242);
+      padding: 4rem;
+      font-size: 16rem;
+      border-radius: 50%;
+    }
+  }
+}
+
+.gray {
+  color: var(--second-text-color);
+}
+
+.comment {
+  color: #000;
+  width: 100%;
+  background: #fff;
+  z-index: 5;
+  :global {
+    .wrapper {
+      width: 100%;
+      position: relative;
+      padding-bottom: 60rem;
+    }
+
+    .items {
+      width: 100%;
+
+      .item {
+        width: 100%;
+        margin-bottom: 15rem;
+
+        .main {
+          width: 100%;
+          padding: 5rem 0;
+          display: flex;
+
+          &:active {
+            background: #53535321;
+          }
+
+          .head-image {
+            margin-left: 15rem;
+            margin-right: 10rem;
+            width: 37rem;
+            height: 37rem;
+            border-radius: 50%;
+          }
+        }
+
+        .replies {
+          padding-left: 55rem;
+
+          .reply {
+            padding: 5rem 0 5rem 5rem;
+            display: flex;
+
+            &:active {
+              background: #53535321;
+            }
+
+            .head-image {
+              margin-right: 10rem;
+              width: 20rem;
+              height: 20rem;
+              border-radius: 50%;
+            }
+          }
+
+          .more {
+            font-size: 13rem;
+            margin: 5rem;
+            display: flex;
+            align-items: center;
+            color: gray;
+
+            .gang {
+              background: #d5d5d5;
+              width: 20rem;
+              margin-right: 10rem;
+              height: 1px;
+            }
+
+            span {
+              margin-right: 5rem;
+            }
+
+            svg {
+              font-size: 10rem;
+            }
+          }
+        }
+
+        .content {
+          width: 100%;
+          display: flex;
+          font-size: 14rem;
+
+          .comment-container {
+            flex: 1;
+            margin-right: 20rem;
+
+            .name {
+              color: var(--second-text-color);
+              margin-bottom: 5rem;
+              display: flex;
+              align-items: center;
+
+              .reply-user {
+                margin-left: 5rem;
+                width: 0;
+                height: 0;
+                border: 5rem solid transparent;
+                border-left: 6rem solid gray;
+              }
+            }
+
+            .detail {
+              margin-bottom: 5rem;
+            }
+
+            .time-wrapper {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              font-size: 13rem;
+
+              .left {
+                display: flex;
+
+                .time {
+                  color: #c4c3c3;
+                  margin-right: 10rem;
+                }
+
+                .reply-text {
+                  color: var(--second-text-color);
+                }
+              }
+
+              .love {
+                color: gray;
+                display: flex;
+                align-items: center;
+
+                &.loved {
+                  color: rgb(231, 58, 87);
+                }
+
+                .love-image {
+                  font-size: 17rem;
+                  margin-right: 4rem;
+                }
+
+                span {
+                  word-break: keep-all;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .input-toolbar {
+      border-radius: 10rem 10rem 0 0;
+      background: white;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+      z-index: 3;
+
+      @space-width: 18rem;
+      @icon-width: 48rem;
+
+      .call-friend {
+        padding-top: 30rem;
+        overflow-x: scroll;
+        display: flex;
+        padding-right: @space-width;
+
+        .friend {
+          width: @icon-width;
+          position: relative;
+          margin-left: @space-width;
+          margin-bottom: @space-width;
+          font-size: 10rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+
+          .avatar {
+            width: @icon-width;
+            height: @icon-width;
+            border-radius: 50%;
+          }
+
+          span {
+            margin-top: 5rem;
+            text-align: center;
+            width: @icon-width;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .checked {
+            position: absolute;
+            top: @icon-width - 1.5;
+            right: -2px;
+            width: 20rem;
+            height: 20rem;
+            border-radius: 50%;
+          }
+        }
+      }
+
+      .toolbar {
+        @icon-width: 25rem;
+        display: flex;
+        align-items: center;
+        padding: 10rem 15rem;
+        border-top: 1px solid #e2e1e1;
+
+        .input-wrapper {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          box-sizing: border-box;
+          padding: 5rem 10rem;
+          background: #eee;
+          border-radius: 20rem;
+
+          .right {
+            display: flex;
+            align-items: center;
+          }
+
+          .auto-input {
+            width: calc(100% - 160rem);
+          }
+        }
+
+        img {
+          width: @icon-width;
+          height: @icon-width;
+          border-radius: 50%;
+          margin-left: 15rem;
+        }
+      }
+    }
+  }
+
+  @normal-bg-color: rgb(35, 38, 47);
+  @chat-bg-color: rgb(105, 143, 244);
+}
+
+.comment-enter-active,
+.comment-leave-active {
+  transition: all 0.15s ease;
+}
+
+.comment-enter-from,
+.comment-leave-to {
+  transform: translateY(60vh);
+}

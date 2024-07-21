@@ -4,6 +4,7 @@ import Slide0 from './Slide0';
 import SlideHorizontal from '@/components/SlideHorizontal';
 
 import BaseFooter from '@/components/BaseFooter';
+import Comment from '@/components/comment';
 
 const Index = () => {
   return (
@@ -65,6 +66,8 @@ const Index = () => {
             </div>
           </div>
         </div>
+        {/* 评论组件 */}
+        <Comment pageId="home-index" modelValue />
       </div>
     </>
   );

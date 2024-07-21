@@ -33,6 +33,7 @@ export type SingleClickBroadcastParams = {
 export type Events = {
   [EVENTKEYENUM.SINGLE_CLICK]: string;
   [EVENTKEYENUM.SINGLE_CLICK_BROADCAST]: SingleClickBroadcastParams;
+  [EVENTKEYENUM.OPEN_COMMENTS]: string;
 };
 const emitter = mitt<Events>();
 
