@@ -64,6 +64,10 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
 }) => {
   // 父元素 dom 实例
   const verticalRef = useRef<HTMLDivElement>(null);
+  const initValue = useRef({
+    isDown: false,
+    isMove: false,
+  });
   // 关于事件的一些变量
   const eventRelated = useRef<MouseEventState>({
     isDbClick: false,
@@ -153,38 +157,53 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     current.lastClickTime = nowTiem;
   };
   const pointerDown = () => {
-    eventRelated.current.isDown = true;
-    console.log('eventRelatedDown==', eventRelated.current.isDown);
+    // eventRelated.current.isDown = true;
+    initValue.current.isDown = true;
+    // console.log('eventRelatedDown==', eventRelated.current.isDown);
   };
   const pointerMove = () => {
-    eventRelated.current.isDown && (eventRelated.current.isMove = true);
+    // eventRelated.current.isDown && (eventRelated.current.isMove = true);
+    if (initValue.current.isDown) {
+      initValue.current.isMove = true;
+    }
+
+    // console.log('eventRelatedDown==pointerMove', eventRelated.current.isDown);
   };
   const up = (e: React.PointerEvent<HTMLDivElement>) => {
     console.log('eventRelatedUp==', eventRelated.current.isDown);
-    if (!eventRelated.current.isDown) {
+    if (!initValue.current.isDown) {
       return;
     }
-    if (!eventRelated.current.isMove) {
+    // if (!eventRelated.current.isDown) {
+    //   return;
+    // }
+    if (!initValue.current.isMove) {
       check(e.nativeEvent);
     }
-    eventRelated.current.isMove = false;
-    eventRelated.current.isDown = false;
+    // if (!eventRelated.current.isMove) {
+    //   check(e.nativeEvent);
+    // }
+    initValue.current.isMove = false;
+    initValue.current.isDown = false;
+    // eventRelated.current.isMove = false;
+    // eventRelated.current.isDown = false;
   };
 
   // 开始滑动
   const pointStart = (e: any) => {
-    console.log('eventRelatedPointStart==', eventRelated.current.isDown);
     sildeTouchStart(e?.nativeEvent, dropEl?.current!, eventRelated.current);
+    console.log('eventRelatedPointStart==', eventRelated.current.isDown);
   };
   // 滑动过程
   const pointMove = (e: any) => {
-    console.log('eventRelatedPointMove==', eventRelated.current.isDown);
     slideTouchMove(
       e?.nativeEvent,
       dropEl?.current as HTMLDivElement,
       eventRelated.current,
       canNext,
     );
+
+    console.log('eventRelatedPointMove==', eventRelated.current.isDown);
   };
   // 判断是否可以下一个  isNext 代表从头到尾或者从尾到头
   const canNext = (state: MouseEventState, direction: SwiperDirectionEnum) => {
@@ -196,7 +215,6 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     );
   };
   const pointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    console.log('eventRelatedPointPointerUp==', eventRelated.current.isDown);
     const isNext = eventRelated.current.move.y < 0;
     if (eventRelated.current.localIndex === 0 && !isNext) {
       return;
@@ -227,20 +245,22 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     eventRelated.current.next = false;
     eventRelated.current.needCheck = true;
     eventRelated.current.isDown = false;
+    console.log('eventRelatedPointPointerUp==', eventRelated.current.isDown);
   };
 
   return (
     <>
       <div
         onPointerDown={pointerDown}
-        onPointerMove={pointMove}
+        onPointerMove={pointerMove}
         onPointerUp={up}
         className="slide slide-infinite"
         ref={verticalRef}
       >
         <div
           onPointerDown={pointStart}
-          onPointerMove={pointerMove}
+          // pointMove pointerMove
+          onPointerMove={pointMove}
           onPointerUp={pointerUp}
           ref={dropEl}
           className="slide-list flex-direction-column"

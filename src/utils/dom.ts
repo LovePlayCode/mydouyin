@@ -44,102 +44,118 @@ export function _css(el: any, key: any, value?: any) {
   return 0;
 }
 export default class Dom {
-  els = [];
+  els: HTMLElement[] = [];
 
   constructor(arg?: any) {
     if (typeof arg === 'string') {
-      return this.find(arg);
+      this.find(arg);
     }
-    if (typeof arg === 'object') {
+    if (typeof arg === 'object' && arg instanceof HTMLElement) {
       this.els.push(arg);
     }
     if (typeof arg === 'function') {
       document.addEventListener('DOMContentLoaded', arg);
     }
-    return this;
   }
 
-  addClass(class1) {
+  addClass(class1: string | string[]): this {
     if (typeof class1 === 'string') {
-      this.els.forEach(el => {
+      for (const el of this.els) {
         el.classList.add(class1);
-      });
+      }
+      // this.els.forEach(el => {
+      //   el.classList.add(class1);
+      // });
     } else {
-      this.els.forEach(el => {
+      for (const el of this.els) {
         el.classList.add(...class1);
-      });
+      }
     }
     return this;
   }
 
-  replaceClass(class1, class2) {
-    this.els.forEach(el => {
+  replaceClass(class1: string, class2: string): this {
+    for (const el of this.els) {
       el.classList.replace(class1, class2);
-    });
+    }
+    // this.els.forEach(el => {
+    //   el.classList.replace(class1, class2);
+    // });
     return this;
   }
 
-  find(tag) {
-    let els: any = [];
+  find(tag: string): this {
+    let els: any[] = [];
     if (this.els.length) {
-      els = this.els[0].querySelectorAll(tag);
+      els = Array.from(this.els[0].querySelectorAll(tag));
     } else {
-      els = document.querySelectorAll(tag);
+      els = Array.from(document.querySelectorAll(tag));
     }
     if (els.length) {
-      this.els = els;
+      this.els = Array.from(els);
     }
     return this;
   }
 
-  create(template) {
+  create(template: string): this {
     const tempNode = document.createElement('div');
     tempNode.innerHTML = template.trim();
-    this.els = [tempNode.firstChild];
+    this.els = [tempNode.firstChild as HTMLElement];
     return this;
   }
 
-  append(that) {
-    debugger;
-    this.els.forEach(el => {
-      that.els.forEach(v => {
-        el.appendChild(v);
-      });
-    });
+  append(that: Dom): this {
+    for (const el of this.els) {
+      for (const childEl of that.els) {
+        el.appendChild(childEl);
+      }
+    }
+    // this.els.forEach(el => {
+    //   that.els.forEach(v => {
+    //     el.appendChild(v);
+    //   });
+    // });
     return this;
   }
 
-  remove() {
-    this.els.forEach(el => {
-      el.parentNode.removeChild(el);
-    });
+  remove(): this {
+    for (const el of this.els) {
+      el.parentNode?.removeChild(el);
+    }
+    // this.els.forEach(el => {
+    //   el.parentNode?.removeChild(el);
+    // });
     return this;
   }
 
-  attr(...args) {
+  // eslint-disable-next-line consistent-return
+  attr(...args: string[]): string | undefined {
     if (args.length === 1) {
-      return this.els[0][args[0]];
+      return (this.els[0] as any)[args[0]];
     }
   }
 
-  css(...args) {
-    debugger;
+  css(...args: any[]): this | string {
     if (args.length === 1) {
       // 情况一：获取样式
       if (typeof args[0] === 'string') {
         return window.getComputedStyle(this.els[this.els.length - 1], null)[
-          args[0]
+          args?.[0] as any
         ];
+        // biome-ignore lint/style/noUselessElse: <explanation>
       } else {
         // 情况三：设置多个样式
-        Object.keys(args[0]).map(key => {
+        // biome-ignore lint/complexity/noForEach: <explanation>
+        Object.keys(args[0]).forEach(key => {
+          // biome-ignore lint/complexity/noForEach: <explanation>
           this.els.forEach(el => {
-            el.style[key] = this.getStyleValue(key, args[0][key]);
+            el.style[key as any] = this.getStyleValue(key, args[0][key]);
           });
         });
       }
     } else {
       // 情况二，设置一对css样式
+      // biome-ignore lint/complexity/noForEach: <explanation>
       this.els.forEach(el => {
         el.style[args[0]] = this.getStyleValue(args[0], args[1]);
       });
@@ -147,37 +163,41 @@ export default class Dom {
     return this;
   }
 
-  on(eventName, fn) {
+  on(eventName: string, fn: EventListenerOrEventListenerObject): this {
     const eventArray = eventName.split(' ');
+    // biome-ignore lint/complexity/noForEach: <explanation>
     this.els.forEach(el => {
-      eventArray.map(event => {
+      // biome-ignore lint/complexity/noForEach: <explanation>
+      eventArray.forEach(event => {
         el.addEventListener(event, fn);
       });
     });
     return this;
   }
 
-  trigger(eventName) {
+  trigger(eventName: string): this {
     const eventArray = eventName.split(' ');
+    // biome-ignore lint/complexity/noForEach: <explanation>
     this.els.forEach(el => {
-      eventArray.map(event => {
+      // biome-ignore lint/complexity/noForEach: <explanation>
+      eventArray.forEach(event => {
         el.dispatchEvent(new Event(event));
       });
     });
     return this;
   }
 
-  getWidth() {
+  getWidth(): number {
     return this.els[0].getBoundingClientRect().width;
   }
 
-  getHeight() {
+  getHeight(): number {
     return this.els[0].getBoundingClientRect().height;
   }
 
-  getStyleValue(key, value) {
+  getStyleValue(key: string, value: any): string {
     const whiteList = ['top', 'left', 'right', 'bottom'];
-    if (whiteList.find(v => v === key)) {
+    if (whiteList.includes(key)) {
       if (typeof value === 'number') {
         return `${value}px`;
       }
@@ -185,7 +205,7 @@ export default class Dom {
     return value;
   }
 
-  removePx(val) {
+  removePx(val: string): number {
     return parseInt(val);
   }
 }
