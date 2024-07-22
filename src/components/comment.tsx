@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import { FC, useContext } from 'react';
 import { useRequest } from 'ahooks';
 import clsx from 'clsx';
 import FromBottomDialog from './FromBottomDialog';
@@ -9,21 +9,31 @@ import emoji from './img/emoji-black.png';
 import darkClose from './img/dark-close.png';
 import { videoComments } from '@/api/videos';
 import { _formatNumber, _time } from '@/utils';
+import HomeContext from '@/routes/contexts/HomeContext';
+import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 
 interface CommentProps {
   pageId: string;
-  modelValue: boolean;
 }
-const Comment: FC<CommentProps> = ({ pageId, modelValue }) => {
+const Comment: FC<CommentProps> = ({ pageId }) => {
+  const { modelValue, setModelValue } = useContext(HomeContext);
   const { data, loading } = useRequest(videoComments);
   return (
     <FromBottomDialog
       pageId={pageId}
       modelValue={modelValue}
-      showHengGang={false}
+      setModelValue={(value: boolean) => {
+        setModelValue({
+          commentVisible: value,
+        });
+      }}
+      showHengGang={true}
       maskMode="light"
       mode="white"
       height="calc(var(--vh, 1vh) * 70)"
+      hide={() => {
+        emitter.emit(EVENTKEYENUM.CLOSE_COMMENTS);
+      }}
       header={
         <div className={styles.title}>
           <img

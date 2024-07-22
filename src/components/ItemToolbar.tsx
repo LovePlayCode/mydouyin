@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { FC, MouseEventHandler } from 'react';
 import clsx from 'clsx';
 import styles from './ItemToolbar.module.less';
 import love from './img/love.svg';
@@ -15,11 +15,20 @@ interface ItemToolbarProps {
   data: AwemeData;
 }
 const ItemToolbar: FC<ItemToolbarProps> = ({ data }) => {
-  const showComments = () => {
+  const showComments = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    // 阻止默认事件
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+    e.preventDefault();
     emitter.emit(EVENTKEYENUM.OPEN_COMMENTS, data.aweme_id);
   };
   return (
-    <div className={clsx(styles.toolbar, 'mb1r')}>
+    <div
+      onPointerDown={e => {
+        e.stopPropagation();
+      }}
+      className={clsx(styles.toolbar, 'mb1r')}
+    >
       {/* 头像部分 */}
       <div className="avatar-ctn mb2r">
         <img

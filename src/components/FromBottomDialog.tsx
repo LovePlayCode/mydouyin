@@ -1,9 +1,10 @@
 import clsx from 'clsx';
 
 import { type FC, useRef } from 'react';
-import { useUpdateEffect } from 'ahooks';
+import { useControllableValue, useUpdateEffect } from 'ahooks';
 import styles from './FromBottomDialog.module.less';
 import Dom, { _css } from '@/utils/dom';
+import { _stopPropagation } from '@/utils/slide';
 
 interface FromBottomDialogProps {
   mode: 'dark' | 'light' | 'white';
@@ -14,19 +15,35 @@ interface FromBottomDialogProps {
   header?: React.ReactNode;
   maskMode: string;
   height: string | number;
+  setModelValue: (val: boolean) => void;
+  /** 弹窗关闭的回调 */
+  hide?: (params: any) => any;
 }
 const FromBottomDialog: FC<FromBottomDialogProps> = ({
   mode = 'dark',
   showHengGang = false,
   children,
-  modelValue = false,
   header,
   pageId,
   maskMode,
   height = 'calc(var(--vh, 1vh) * 70)',
+  hide,
+  ...props
 }) => {
   const scroll = useRef(0);
   const pagePosition = useRef(null);
+  const [modelValue, setModelValue] = useControllableValue<boolean>(props, {
+    defaultValue: false,
+    defaultValuePropName: 'defaultModelValue',
+    valuePropName: 'modelValue',
+    trigger: 'setModelValue',
+  });
+  const onHide = (val = false) => {
+    setModelValue(val);
+    // 调用外部hide
+    hide?.(val);
+  };
+  console.log('modelValue==', modelValue);
   useUpdateEffect(() => {
     // 获取 page  id
     const pageEl = document.getElementById(pageId);
@@ -43,7 +60,11 @@ const FromBottomDialog: FC<FromBottomDialogProps> = ({
       const maskTemplate = `<div class="Mask fade-in ${maskMode}"></div>`;
       const mask = new Dom().create(maskTemplate);
       setTimeout(() => {
-        mask.on('click', (e: Event) => {});
+        mask.on('click', (e: Event) => {
+          console.log('e==', e);
+          _stopPropagation(e);
+          onHide(false);
+        });
       }, 200);
       pageEl.appendChild(mask.els[0]);
     } else {

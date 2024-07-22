@@ -1,6 +1,6 @@
-import { type FC, useRef } from 'react';
+import { type FC, useRef, useEffect } from 'react';
 import './BaseVideo.less';
-import { useSetState } from 'ahooks';
+import { useDeepCompareEffect, useSetState } from 'ahooks';
 import { IconPlayArrowFill } from '@arco-design/web-react/icon';
 import ItemToolbar from './ItemToolbar';
 import ItemDesc from './ItemDesc';
@@ -42,6 +42,13 @@ const BaseVideo: FC<BaseVideoProps> = ({
   });
   const videoEl = useRef<HTMLVideoElement>(null);
   const progressEl = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    console.log('视频组件初始化...');
+    console.log('state==', state.iscommentVisible);
+    return () => {
+      console.log('销毁');
+    };
+  }, [state.iscommentVisible]);
   const loadedMetadata = (e: any) => {
     // 获取播放进度
     const { target } = e ?? {};
@@ -112,6 +119,7 @@ const BaseVideo: FC<BaseVideoProps> = ({
    * @param id 展示菜单的 id
    */
   const onOpenComments = (id: string) => {
+    console.log('video==', videoEl.current);
     if (id === item.aweme_id) {
       _css(videoEl.current, 'transition-duration', '300ms');
       _css(videoEl.current, 'height', 'calc(var(--vh, 1vh) * 30)');
@@ -122,8 +130,31 @@ const BaseVideo: FC<BaseVideoProps> = ({
       iscommentVisible: false,
     });
   };
-  emitter.on(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, click);
-  emitter.on(EVENTKEYENUM.OPEN_COMMENTS, onOpenComments);
+  /**
+   * 关闭 video 上拉
+   */
+  const onCloseComments = () => {
+    // 如果是上拉状态，那么就关闭上拉状态
+    if (state.iscommentVisible === false) {
+      _css(videoEl.current, 'transition-duration', '300ms');
+      _css(videoEl.current, 'height', '100%');
+      setState({
+        iscommentVisible: true,
+      });
+    }
+  };
+  useDeepCompareEffect(() => {
+    emitter.on(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, click);
+    emitter.on(EVENTKEYENUM.OPEN_COMMENTS, onOpenComments);
+    emitter.on(EVENTKEYENUM.CLOSE_COMMENTS, onCloseComments);
+    return () => {
+      emitter.off(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, click);
+      emitter.off(EVENTKEYENUM.OPEN_COMMENTS, onOpenComments);
+      emitter.off(EVENTKEYENUM.CLOSE_COMMENTS, onCloseComments);
+    };
+  }, [state]);
+  // useEffect
+
   return (
     <div className="video-wrapper">
       <video
@@ -136,6 +167,7 @@ const BaseVideo: FC<BaseVideoProps> = ({
         onTimeUpdate={timeupdate}
         loop
       />
+
       {!(state.status === MediaEnum.PLAY) && (
         <IconPlayArrowFill className="pause-icon" />
       )}
