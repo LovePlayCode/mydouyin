@@ -8,27 +8,28 @@
   align-items: center;
   justify-content: space-between;
   border-radius: 10rem 10rem 0 0;
+  :global {
+    .num {
+      width: 100%;
+      position: absolute;
+      font-size: 12rem;
+      font-weight: bold;
+      text-align: center;
+    }
 
-  .num {
-    width: 100%;
-    position: absolute;
-    font-size: 12rem;
-    font-weight: bold;
-    text-align: center;
-  }
+    .right {
+      display: flex;
+      gap: 12rem;
+      position: relative;
+      z-index: 9;
 
-  .right {
-    display: flex;
-    gap: 12rem;
-    position: relative;
-    z-index: 9;
-
-    svg {
-      color: #000;
-      background: rgb(242, 242, 242);
-      padding: 4rem;
-      font-size: 16rem;
-      border-radius: 50%;
+      svg {
+        color: #000;
+        background: rgb(242, 242, 242);
+        padding: 4rem;
+        font-size: 16rem;
+        border-radius: 50%;
+      }
     }
   }
 }

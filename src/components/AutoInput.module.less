@@ -1,0 +1,22 @@
+.auto-input {
+  font-size: 14rem;
+  width: 100%;
+  max-height: 70rem;
+  overflow-y: scroll;
+  padding: 0 5rem;
+  outline: none;
+}
+
+.auto-input::-webkit-scrollbar {
+  width: 0 !important;
+}
+
+.auto-input:empty::before {
+  /*content: "留下你的精彩评论吧";*/
+  content: '留下你的精彩评论吧';
+  color: #999999;
+}
+
+.auto-input:focus::before {
+  content: none;
+}

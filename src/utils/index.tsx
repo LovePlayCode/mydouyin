@@ -51,3 +51,70 @@ export function _formatNumber(num: number) {
   }
   return num;
 }
+
+export function _dateFormat(val: number, type?: string): string {
+  if (!val) {
+    return '';
+  }
+  if (String(val).length === 10) {
+    val *= 1000;
+  }
+  const d = new Date(Number(val));
+  const year = d.getFullYear();
+  const m = d.getMonth() + 1;
+  const mStr = m < 10 ? `0${m}` : m;
+  const day = d.getDate();
+  const dayStr = day < 10 ? `0${day}` : day;
+  const h = d.getHours();
+  const hStr = h < 10 ? `0${h}` : h;
+  const min = d.getMinutes();
+  const minStr = min < 10 ? `0${min}` : min;
+  const sec = d.getSeconds();
+  const secStr = sec < 10 ? `0${sec}` : sec;
+  switch (type) {
+    case 'Y':
+      return `${year}`;
+    case 'M':
+      return `${year}-${mStr}`;
+    case 'M_D':
+      return `${mStr}-${dayStr}`;
+    case 'M_CN':
+      return `${year}年${mStr}月`;
+    case 'D':
+      return `${year}-${mStr}-${dayStr}`;
+    case 'm':
+      return `${year}-${mStr}-${dayStr} ${hStr}:${minStr}`;
+    default:
+      return `${year}-${mStr}-${dayStr} ${hStr}:${minStr}:${secStr}`;
+  }
+}
+/**
+ * 解析时间
+ */
+export function _time(time: number) {
+  if (String(time).length === 10) {
+    time *= 1000;
+  }
+  const date = new Date(Number(time));
+  const now = new Date();
+  const d = now.valueOf() - date.valueOf();
+  let str = '';
+  if (d < 1000 * 60) {
+    str = '刚刚';
+  } else if (d < 1000 * 60 * 60) {
+    str = `${(d / (1000 * 60)).toFixed()}分钟前`;
+  } else if (d < 1000 * 60 * 60 * 24) {
+    str = `${(d / (1000 * 60 * 60)).toFixed()}小时前`;
+  } else if (d < 1000 * 60 * 60 * 24 * 2) {
+    str = '1天前';
+  } else if (d < 1000 * 60 * 60 * 24 * 3) {
+    str = '2天前';
+  } else if (d < 1000 * 60 * 60 * 24 * 4) {
+    str = '3天前';
+  } else if (date.getFullYear() === now.getFullYear()) {
+    str = _dateFormat(time, 'M_D');
+  } else {
+    str = _dateFormat(time, 'D');
+  }
+  return str;
+}

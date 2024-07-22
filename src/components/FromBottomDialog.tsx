@@ -13,6 +13,7 @@ interface FromBottomDialogProps {
   children: React.ReactNode;
   header?: React.ReactNode;
   maskMode: string;
+  height: string | number;
 }
 const FromBottomDialog: FC<FromBottomDialogProps> = ({
   mode = 'dark',
@@ -22,6 +23,7 @@ const FromBottomDialog: FC<FromBottomDialogProps> = ({
   header,
   pageId,
   maskMode,
+  height = 'calc(var(--vh, 1vh) * 70)',
 }) => {
   const scroll = useRef(0);
   const pagePosition = useRef(null);
@@ -62,6 +64,7 @@ const FromBottomDialog: FC<FromBottomDialogProps> = ({
           mode,
           'no-heng-gang': showHengGang,
         })}
+        style={{ height }}
       >
         {header && header}
         {showHengGang && (
