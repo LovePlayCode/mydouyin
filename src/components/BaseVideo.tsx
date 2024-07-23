@@ -1,13 +1,15 @@
-import { type FC, useRef, useEffect, ReactEventHandler } from 'react';
+import { type FC, useRef, useEffect } from 'react';
 import './BaseVideo.less';
 import { useDeepCompareEffect, useSetState } from 'ahooks';
 import { IconPlayArrowFill } from '@arco-design/web-react/icon';
+import clsx from 'clsx';
 import ItemToolbar from './ItemToolbar';
 import ItemDesc from './ItemDesc';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 import { MediaEnum } from '@/common/contains';
 import type { AwemeData } from '@/common/data';
 import { _css } from '@/utils/dom';
+import { _duration } from '@/utils';
 
 interface BaseVideoProps {
   videoUrl: string;
@@ -29,6 +31,7 @@ const BaseVideo: FC<BaseVideoProps> = ({
     status: isplay ? MediaEnum.PLAY : MediaEnum.PAUSE,
     playX: 0,
     iscommentVisible: true,
+    isMove: false,
   });
 
   const baseVideoRef = useRef({
@@ -39,6 +42,13 @@ const BaseVideo: FC<BaseVideoProps> = ({
     },
     duration: 0,
     currentTime: 0,
+    start: {
+      x: 0,
+    },
+    last: {
+      x: 0,
+      time: 0,
+    },
   });
   const videoEl = useRef<HTMLVideoElement>(null);
   const progressEl = useRef<HTMLDivElement>(null);
@@ -69,6 +79,7 @@ const BaseVideo: FC<BaseVideoProps> = ({
       playX: (baseVideoRef.current.currentTime - 1) * baseVideoRef.current.step,
     });
   };
+  console.log('state.playX==', state.playX);
   const play = () => {
     if (!videoEl.current) {
       console.error('播放器初始化失败,请刷新重试');
@@ -173,6 +184,60 @@ const BaseVideo: FC<BaseVideoProps> = ({
       );
     }
   };
+  // 进度条事件-- 开始滑动
+  const touchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    // state.srat
+    const { current } = baseVideoRef ?? {};
+    current.start.x = e.touches[0].pageX;
+    current.last.x = e.touches[0].pageX;
+    current.last.time = current.currentTime;
+  };
+  // 滑动过程
+  const touchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setState({
+      isMove: true,
+    });
+    pause();
+    // 算出滑动距离
+    const dx = e.touches[0].pageX - baseVideoRef.current.start.x;
+    // 同步进度条
+    setState({
+      playX: baseVideoRef.current.last.x + dx,
+    });
+    baseVideoRef.current.currentTime =
+      baseVideoRef.current.last.time +
+      Math.ceil(Math.ceil(dx) / baseVideoRef.current.step);
+    if (baseVideoRef.current.currentTime <= 0) {
+      baseVideoRef.current.currentTime = 0;
+    }
+    if (baseVideoRef.current.currentTime >= baseVideoRef.current.duration) {
+      baseVideoRef.current.currentTime = baseVideoRef.current.duration;
+    }
+  };
+  // 滑动结束
+  const touchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (state.status === MediaEnum.PLAY) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      setState({
+        isMove: false,
+      });
+    });
+    // setTimeout(() => {
+    //   setState({
+    //     isMove: false,
+    //   });
+    //   // state.isMove = false;
+    // }, 1000);
+    if (videoEl.current) {
+      videoEl.current.currentTime = baseVideoRef.current.currentTime;
+    }
+    play();
+  };
   useDeepCompareEffect(() => {
     emitter.on(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, click);
     emitter.on(EVENTKEYENUM.OPEN_COMMENTS, onOpenComments);
@@ -215,11 +280,33 @@ const BaseVideo: FC<BaseVideoProps> = ({
           )}
         </div>
         {/* 进度条 */}
-        <div className="progress" ref={progressEl}>
+        <div
+          className={clsx('progress', {
+            move: state.isMove,
+            stop: state.status === MediaEnum.STOP,
+          })}
+          onTouchStart={touchStart}
+          onTouchMove={touchMove}
+          onTouchEnd={touchEnd}
+          ref={progressEl}
+        >
+          {/* 如果是拉动进度条状态才展示时间 */}
+          {state.isMove && (
+            <div className="time">
+              <span className="currentTime">
+                {_duration(baseVideoRef.current.currentTime)}
+              </span>
+              <span className="duration">
+                /{_duration(baseVideoRef.current.duration)}
+              </span>
+            </div>
+          )}
+          {/* 如果是大于 15 秒或者是暂停状态才展示进度条 */}
           {(baseVideoRef.current.duration > 15 ||
             state.status === MediaEnum.PAUSE) && (
             <>
               <div className="bg" />
+
               <div
                 className="progress-line"
                 style={{ width: `${state.playX}px` }}

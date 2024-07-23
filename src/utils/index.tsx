@@ -118,3 +118,34 @@ export function _time(time: number) {
   }
   return str;
 }
+
+/**
+ * 解析时间
+ * @param v 时间
+ * @returns
+ */
+export function _duration(v: any) {
+  if (!v) {
+    return '00:00';
+  }
+  const m = Math.floor(v / 60);
+  // let s = v % 60
+  const s = Math.round(v % 60);
+  let str = '';
+  if (m === 0) {
+    str = '00';
+  } else if (m > 0 && m < 10) {
+    str = `0${m}`;
+  } else {
+    str = `${m}`;
+  }
+  str += ':';
+  if (s === 0) {
+    str += '00';
+  } else if (s > 0 && s < 10) {
+    str += `0${s}`;
+  } else {
+    str += s;
+  }
+  return str;
+}
