@@ -35,6 +35,14 @@ export type Events = {
   [EVENTKEYENUM.SINGLE_CLICK_BROADCAST]: SingleClickBroadcastParams;
   [EVENTKEYENUM.OPEN_COMMENTS]: string;
   [EVENTKEYENUM.CLOSE_COMMENTS]: undefined | null;
+  [EVENTKEYENUM.DIALOG_END]: {
+    tag: string;
+    isClose: boolean;
+  };
+  [EVENTKEYENUM.DIALOG_MOVE]: {
+    tag: string;
+    distance: number;
+  };
 };
 const emitter = mitt<Events>();
 

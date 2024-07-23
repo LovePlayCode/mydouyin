@@ -1,4 +1,4 @@
-import type { FC, MouseEventHandler } from 'react';
+import type { FC } from 'react';
 import clsx from 'clsx';
 import styles from './ItemToolbar.module.less';
 import love from './img/love.svg';

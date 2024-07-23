@@ -1,4 +1,4 @@
-import { FC, useContext } from 'react';
+import { type FC, useContext } from 'react';
 import { useRequest } from 'ahooks';
 import clsx from 'clsx';
 import FromBottomDialog from './FromBottomDialog';
@@ -27,13 +27,14 @@ const Comment: FC<CommentProps> = ({ pageId }) => {
           commentVisible: value,
         });
       }}
-      showHengGang={true}
+      showHengGang={false}
       maskMode="light"
       mode="white"
       height="calc(var(--vh, 1vh) * 70)"
       hide={() => {
         emitter.emit(EVENTKEYENUM.CLOSE_COMMENTS);
       }}
+      tag="comment"
       header={
         <div className={styles.title}>
           <img

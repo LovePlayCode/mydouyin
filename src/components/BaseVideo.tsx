@@ -1,4 +1,4 @@
-import { type FC, useRef, useEffect } from 'react';
+import { type FC, useRef, useEffect, ReactEventHandler } from 'react';
 import './BaseVideo.less';
 import { useDeepCompareEffect, useSetState } from 'ahooks';
 import { IconPlayArrowFill } from '@arco-design/web-react/icon';
@@ -143,14 +143,48 @@ const BaseVideo: FC<BaseVideoProps> = ({
       });
     }
   };
+  // 弹窗关闭
+  const onDialogEnd = ({ tag, isClose }: { tag: string; isClose: boolean }) => {
+    if (!state.iscommentVisible && tag === 'comment') {
+      _css(videoEl.current, 'transition-duration', '300ms');
+      if (isClose) {
+        setState({
+          iscommentVisible: true,
+        });
+        _css(videoEl.current, 'height', '100%');
+      } else {
+        _css(videoEl.current, 'height', 'calc(var(--vh, 1vh) * 30)');
+      }
+    }
+  };
+  const onDialogMove = ({
+    tag,
+    distance,
+  }: {
+    tag: string;
+    distance: number;
+  }) => {
+    if (!state.iscommentVisible && tag === 'comment') {
+      _css(videoEl.current, 'transition-duration', '0ms');
+      _css(
+        videoEl.current,
+        'height',
+        `calc(var(--vh, 1vh) * 30 + ${distance}px)`,
+      );
+    }
+  };
   useDeepCompareEffect(() => {
     emitter.on(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, click);
     emitter.on(EVENTKEYENUM.OPEN_COMMENTS, onOpenComments);
     emitter.on(EVENTKEYENUM.CLOSE_COMMENTS, onCloseComments);
+    emitter.on(EVENTKEYENUM.DIALOG_END, onDialogEnd);
+    emitter.on(EVENTKEYENUM.DIALOG_MOVE, onDialogMove);
     return () => {
       emitter.off(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, click);
       emitter.off(EVENTKEYENUM.OPEN_COMMENTS, onOpenComments);
       emitter.off(EVENTKEYENUM.CLOSE_COMMENTS, onCloseComments);
+      emitter.off(EVENTKEYENUM.DIALOG_END, onDialogEnd);
+      emitter.off(EVENTKEYENUM.DIALOG_MOVE, onDialogMove);
     };
   }, [state]);
   // useEffect
@@ -182,7 +216,8 @@ const BaseVideo: FC<BaseVideoProps> = ({
         </div>
         {/* 进度条 */}
         <div className="progress" ref={progressEl}>
-          {baseVideoRef.current.duration > 15 && (
+          {(baseVideoRef.current.duration > 15 ||
+            state.status === MediaEnum.PAUSE) && (
             <>
               <div className="bg" />
               <div
