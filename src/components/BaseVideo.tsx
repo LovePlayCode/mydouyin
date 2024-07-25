@@ -227,12 +227,6 @@ const BaseVideo: FC<BaseVideoProps> = ({
         isMove: false,
       });
     });
-    // setTimeout(() => {
-    //   setState({
-    //     isMove: false,
-    //   });
-    //   // state.isMove = false;
-    // }, 1000);
     if (videoEl.current) {
       videoEl.current.currentTime = baseVideoRef.current.currentTime;
     }

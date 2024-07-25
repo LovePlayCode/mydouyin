@@ -1,0 +1,275 @@
+// :global(.primary) {
+//   background: var(--primary-btn-color);
+// }
+.button {
+  color: white;
+  height: 40rem;
+  line-height: 40rem;
+  //width: 100%;
+  font-size: 14rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  :global {
+    .progress {
+      border-radius: 3rem;
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0;
+      background: rgb(80 80 80 / 10%);
+    }
+
+    img {
+      height: 16rem;
+      margin-right: 5rem;
+      animation: animal 0.8s infinite linear;
+
+      @keyframes animal {
+        0% {
+          transform: rotate(-360deg);
+        }
+        100% {
+          transform: rotate(0deg);
+        }
+      }
+    }
+  }
+  // 这样可以编译
+  :global(&.primary) {
+    background: var(--primary-btn-color);
+  }
+  // 这样是不可以的
+
+  // :global {
+  //   &.primary {
+  //     background: var(--primary-btn-color);
+  //   }
+  // }
+  :global(&.dark) {
+    background: var(--second-btn-color);
+    color: var(--second-text-color);
+  }
+  // &.dark {
+  //   background: var(--second-btn-color);
+  //   color: var(--second-text-color);
+  // }
+
+  &.dark2 {
+    background: rgb(51, 51, 51);
+    color: #fff;
+  }
+
+  &.green {
+    background: rgb(9, 184, 91);
+    color: white;
+  }
+
+  &.qqzone {
+    background: rgb(240, 179, 2);
+    color: white;
+  }
+
+  &.qq {
+    background: rgb(27, 177, 228);
+    color: white;
+  }
+
+  &.webo {
+    background: rgb(242, 95, 67);
+    color: white;
+  }
+
+  &.white {
+    background: white !important;
+    color: black;
+    border: 1px solid gainsboro !important;
+  }
+
+  &.info {
+    background: rgba(161, 139, 129, 0.3);
+    color: white;
+  }
+
+  &:active {
+    &.primary {
+      background: var(--disable-primary-btn-color);
+    }
+
+    &.dark {
+      background: var(--second-btn-color-tran);
+    }
+
+    &.green {
+      opacity: 0.8;
+    }
+
+    &.qqzone {
+      opacity: 0.8;
+    }
+
+    &.qq {
+      opacity: 0.8;
+    }
+
+    &.webo {
+      opacity: 0.8;
+    }
+  }
+
+  &.no-active {
+    &:active {
+      &.primary {
+        background: var(--primary-btn-color);
+      }
+
+      &.dark {
+        background: var(--second-btn-color);
+      }
+
+      &.white {
+        background: white;
+      }
+
+      &.green {
+        background: rgb(9, 184, 91);
+      }
+
+      &.qqzone {
+        background: rgb(27, 177, 228);
+      }
+
+      &.qq {
+        background: rgb(27, 177, 228);
+      }
+    }
+  }
+
+  &.disabled {
+    &.primary {
+      background: gainsboro;
+      color: white;
+    }
+
+    &.white {
+      background: lightgray;
+    }
+
+    &:active {
+      &.primary {
+        background: gainsboro;
+      }
+    }
+  }
+
+  &.no-border {
+    border: none !important;
+    background: rgb(212 212 212 / 36%);
+  }
+
+  &.small {
+    font-size: 12rem;
+    width: 62rem;
+    height: 26rem;
+  }
+  :global(.dark2) {
+    background: rgb(51, 51, 51);
+    color: #fff;
+  }
+
+  :global(.green) {
+    background: rgb(9, 184, 91);
+    color: white;
+  }
+
+  :global(.qqzone) {
+    background: rgb(240, 179, 2);
+    color: white;
+  }
+
+  :global(.qq) {
+    background: rgb(27, 177, 228);
+    color: white;
+  }
+
+  :global(.webo) {
+    background: rgb(242, 95, 67);
+    color: white;
+  }
+
+  :global(.white) {
+    background: white !important;
+    color: black;
+    border: 1px solid gainsboro !important;
+  }
+
+  :global(.info) {
+    background: rgba(161, 139, 129, 0.3);
+    color: white;
+  }
+
+  :global(.dark2:active) {
+    background: var(--disable-primary-btn-color);
+  }
+
+  :global(.dark:active) {
+    background: var(--second-btn-color-tran);
+  }
+
+  :global(.green:active),
+  :global(.qqzone:active),
+  :global(.qq:active),
+  :global(.webo:active) {
+    opacity: 0.8;
+  }
+
+  :global(.no-active:active .primary) {
+    background: var(--primary-btn-color);
+  }
+
+  :global(.no-active:active .dark) {
+    background: var(--second-btn-color);
+  }
+
+  :global(.no-active:active .white) {
+    background: white;
+  }
+
+  :global(.no-active:active .green) {
+    background: rgb(9, 184, 91);
+  }
+
+  :global(.no-active:active .qqzone) {
+    background: rgb(27, 177, 228);
+  }
+
+  :global(.no-active:active .qq) {
+    background: rgb(27, 177, 228);
+  }
+
+  :global(.disabled .primary) {
+    background: gainsboro;
+    color: white;
+  }
+
+  :global(.disabled .white) {
+    background: lightgray;
+  }
+
+  :global(.disabled:active .primary) {
+    background: gainsboro;
+  }
+
+  :global(.no-border) {
+    border: none !important;
+    background: rgb(212 212 212 / 36%);
+  }
+
+  :global(.small) {
+    font-size: 12rem;
+    width: 62rem;
+    height: 26rem;
+  }
+}

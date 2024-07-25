@@ -1,7 +1,7 @@
 import { IconAlignLeft, IconSearch } from '@arco-design/web-react/icon';
 import './index.less';
 
-import { useSetState } from 'ahooks';
+import { useDeepCompareEffect, useSetState } from 'ahooks';
 import HomeContext from '../contexts/HomeContext';
 import Slide0 from './Slide0';
 import SlideHorizontal from '@/components/SlideHorizontal';
@@ -9,16 +9,35 @@ import SlideHorizontal from '@/components/SlideHorizontal';
 import BaseFooter from '@/components/BaseFooter';
 import Comment from '@/components/comment';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
+import Share from '@/components/Share';
 
 const Index = () => {
   const [state, setState] = useSetState({
     commentVisible: false,
+    isSharing: false,
   });
-  emitter.on(EVENTKEYENUM.OPEN_COMMENTS, () => {
-    setState({
-      commentVisible: true,
+
+  useDeepCompareEffect(() => {
+    // 注册打开评论事件
+    emitter.on(EVENTKEYENUM.OPEN_COMMENTS, () => {
+      setState({
+        commentVisible: true,
+      });
     });
-  });
+    // 注册打开分享面板
+    emitter.on(EVENTKEYENUM.SHOW_SHARE, () => {
+      setState({
+        isSharing: true,
+      });
+    });
+    return () => {
+      emitter.off(EVENTKEYENUM.OPEN_COMMENTS, () => {
+        setState({
+          commentVisible: true,
+        });
+      });
+    };
+  }, [state]);
   return (
     <>
       <HomeContext.Provider
@@ -83,6 +102,16 @@ const Index = () => {
           </div>
           {/* 评论组件 */}
           <Comment pageId="home-index" />
+          {/* 分享组件 */}
+          <Share
+            modelValue={state?.isSharing}
+            setModelValue={(value: boolean) => {
+              setState({
+                isSharing: value,
+              });
+            }}
+            pageId="home-index"
+          />
         </div>
       </HomeContext.Provider>
     </>

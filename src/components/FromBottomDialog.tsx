@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { type FC, useRef } from 'react';
 import { useControllableValue, useUpdateEffect } from 'ahooks';
 import './FromBottomDialog.less';
+import { CSSTransition } from 'react-transition-group';
 import Dom, { _css } from '@/utils/dom';
 import { _stopPropagation } from '@/utils/slide';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
@@ -20,7 +21,7 @@ interface FromBottomDialogProps {
   /** 弹窗关闭的回调 */
   hide?: (params: any) => any;
   // tag 名称
-  tag: string;
+  tag?: string;
 }
 const FromBottomDialog: FC<FromBottomDialogProps> = ({
   mode = 'dark',
@@ -113,7 +114,7 @@ const FromBottomDialog: FC<FromBottomDialogProps> = ({
     // console.log('moveY.current==', moveY.current, e.touches[0].pageX);
     if (moveY.current > 0) {
       emitter.emit(EVENTKEYENUM.DIALOG_MOVE, {
-        tag,
+        tag: tag || '',
         distance: moveY.current,
       });
       _css(
@@ -137,7 +138,7 @@ const FromBottomDialog: FC<FromBottomDialogProps> = ({
     // 如果一次性移动的距离超过了元素本身距离的一半 否则恢复原状
     if (Math.abs(moveY.current) > clientHeight / 2) {
       emitter.emit(EVENTKEYENUM.DIALOG_END, {
-        tag,
+        tag: tag || '',
         isClose: true,
       });
       _css(dialogEl.current, 'transform', 'translate3d(0,100%,0)');
@@ -146,14 +147,21 @@ const FromBottomDialog: FC<FromBottomDialogProps> = ({
       });
     } else {
       emitter.emit(EVENTKEYENUM.DIALOG_END, {
-        tag,
+        tag: tag || '',
         isClose: false,
       });
       _css(dialogEl.current, 'transform', 'translate3d(0,0,0)');
     }
   };
-  return modelValue ? (
-    <>
+  const nodeRef = useRef(null);
+  console.log('modelvalue==', modelValue);
+  return (
+    <CSSTransition
+      in={modelValue}
+      timeout={250}
+      unmountOnExit
+      classNames="test"
+    >
       <div
         className={clsx('FromBottomDialog', mode, {
           'no-heng-gang': !showHengGang,
@@ -175,6 +183,33 @@ const FromBottomDialog: FC<FromBottomDialogProps> = ({
           {children}
         </div>
       </div>
+    </CSSTransition>
+  );
+  return modelValue ? (
+    <>
+      <CSSTransition in={modelValue} timeout={250} classNames="my-node">
+        <div
+          className={clsx('FromBottomDialog', mode, {
+            'no-heng-gang': !showHengGang,
+          })}
+          style={{ height, maxHeight: height }}
+          onTouchStart={onStart}
+          onTouchMove={onMove}
+          onTouchEnd={onEnd}
+          ref={dialogEl}
+        >
+          {header && header}
+          {showHengGang && (
+            <div className={clsx('heng-gang', mode)}>
+              <div className="content" />
+            </div>
+          )}
+
+          <div ref={wrapperEl} className="wrapper">
+            {children}
+          </div>
+        </div>
+      </CSSTransition>
     </>
   ) : (
     <></>

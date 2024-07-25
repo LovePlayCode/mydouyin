@@ -1,11 +1,31 @@
+/* 定义进入和离开的过渡效果 */
 .test-enter-active,
-.test-leave-active {
-  transition-duration: 250ms !important;
+.test-exit-active {
+  transition: transform 250ms, opacity 250ms !important;
 }
 
-.test-enter-from,
-.test-leave-to {
+/* 进入过渡的开始状态 */
+.test-enter {
   transform: translate3d(0, 101%, 0) !important;
+  opacity: 0;
+}
+
+/* 进入过渡的结束状态 */
+.test-enter-active {
+  transform: translate3d(0, 0, 0) !important;
+  opacity: 1;
+}
+
+/* 离开过渡的开始状态 */
+.test-exit {
+  transform: translate3d(0, 0, 0) !important;
+  opacity: 1;
+}
+
+/* 离开过渡的结束状态 */
+.test-exit-active {
+  transform: translate3d(0, 101%, 0) !important;
+  opacity: 0;
 }
 
 .FromBottomDialog {

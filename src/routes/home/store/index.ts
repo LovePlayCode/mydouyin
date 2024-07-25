@@ -1,5 +1,6 @@
 import { proxy, useSnapshot } from 'valtio';
 import data from '@/routes/home/data.json';
+import resource from '@/common/resource';
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P] extends ReadonlyArray<infer U>
@@ -11,6 +12,7 @@ type Mutable<T> = {
 
 const store = proxy({
   list: data,
+  friends: resource.users.all,
 });
 export const useHomeData = () => {
   const snapshot = useSnapshot(store);

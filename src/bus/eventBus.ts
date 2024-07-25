@@ -43,6 +43,10 @@ export type Events = {
     tag: string;
     distance: number;
   };
+  /**
+   * 调出分享面板
+   */
+  [EVENTKEYENUM.SHOW_SHARE]: undefined | null;
 };
 const emitter = mitt<Events>();
 

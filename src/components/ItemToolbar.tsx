@@ -22,6 +22,9 @@ const ItemToolbar: FC<ItemToolbarProps> = ({ data }) => {
     e.preventDefault();
     emitter.emit(EVENTKEYENUM.OPEN_COMMENTS, data.aweme_id);
   };
+  const onClickShare = (e: React.MouseEvent<HTMLDivElement>) => {
+    emitter.emit(EVENTKEYENUM.SHOW_SHARE);
+  };
   return (
     <div
       onPointerDown={e => {
@@ -97,7 +100,7 @@ const ItemToolbar: FC<ItemToolbarProps> = ({ data }) => {
         <span>{_formatNumber(data.statistics.comment_count)}</span>
       </div>
       {/* 分享部分 */}
-      <div className="share mb2r">
+      <div className="share mb2r" onClick={onClickShare}>
         <img src={shareWhiteFull} alt="" className="share-image" />
         <span>{_formatNumber(data.statistics.share_count)}</span>
       </div>
