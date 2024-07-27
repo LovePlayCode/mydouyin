@@ -1,4 +1,5 @@
 import mitt from 'mitt';
+import { HeaderEnum } from '@/common/contains';
 
 export enum EVENTKEYENUM {
   SINGLE_CLICK = 'SINGLE_CLICK',
@@ -29,9 +30,10 @@ export enum EVENTKEYENUM {
 export type SingleClickBroadcastParams = {
   type: EVENTKEYENUM;
   index: number;
+  uniqueId: HeaderEnum;
 };
 export type Events = {
-  [EVENTKEYENUM.SINGLE_CLICK]: string;
+  [EVENTKEYENUM.SINGLE_CLICK]: HeaderEnum;
   [EVENTKEYENUM.SINGLE_CLICK_BROADCAST]: SingleClickBroadcastParams;
   [EVENTKEYENUM.OPEN_COMMENTS]: string;
   [EVENTKEYENUM.CLOSE_COMMENTS]: undefined | null;

@@ -8,7 +8,7 @@ import {
   slideTouchEnd,
   slideTouchMove,
 } from '@/utils/slide';
-import { SlideEnum, SwiperDirectionEnum } from '@/common/contains';
+import { HeaderEnum, SlideEnum, SwiperDirectionEnum } from '@/common/contains';
 import { random } from '@/utils';
 import loved from '@/components/img/loved.svg';
 import Dom from '@/utils/dom';
@@ -18,13 +18,15 @@ interface SlideVerticalInfiniteProps {
     item: any,
     isPlay: boolean,
     position: {
-      uniqueId: string;
+      uniqueId: HeaderEnum;
       index: number;
     },
   ) => React.ReactNode;
   list: any[];
   index?: number;
   virtualTotal?: number;
+  SlideVerticalStyle?: React.CSSProperties;
+  uniqueId?: HeaderEnum;
 }
 export interface MouseEventState {
   isDbClick: boolean;
@@ -61,6 +63,8 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
   list,
   index,
   virtualTotal = 5,
+  SlideVerticalStyle,
+  uniqueId,
 }) => {
   // 父元素 dom 实例
   const verticalRef = useRef<HTMLDivElement>(null);
@@ -97,10 +101,11 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     type: SlideEnum.VERTICAL,
     localIndex: index || 0,
   });
-  const click = () => {
+  const click = (uniqueId: HeaderEnum) => {
     emitter.emit(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, {
       type: EVENTKEYENUM.ITEM_TOGGLE,
       index: eventRelated.current.localIndex,
+      uniqueId,
     });
   };
   useMount(() => {
@@ -151,7 +156,7 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
       }, current.dbCheckCancelTime);
     } else {
       current.clickTimer = window.setTimeout(() => {
-        emitter.emit(EVENTKEYENUM.SINGLE_CLICK, 'home');
+        emitter.emit(EVENTKEYENUM.SINGLE_CLICK, uniqueId || HeaderEnum.HOT);
       }, current.checkTime);
     }
     current.lastClickTime = nowTiem;
@@ -219,7 +224,28 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
     if (eventRelated.current.localIndex === 0 && !isNext) {
       return;
     }
-    slideTouchEnd(e?.nativeEvent, eventRelated.current, canNext, () => {
+    slideTouchEnd(e?.nativeEvent, eventRelated.current, canNext, direction => {
+      const oldIndex = eventRelated.current.localIndex;
+      if (
+        direction === SwiperDirectionEnum.Left ||
+        direction === SwiperDirectionEnum.Up
+      ) {
+        eventRelated.current.localIndex++;
+      } else {
+        eventRelated.current.localIndex--;
+      }
+      // 进行回调，触发事件
+      emitter.emit(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, {
+        uniqueId: uniqueId || HeaderEnum.HOT,
+        type: EVENTKEYENUM.ITEM_PLAY,
+        index: eventRelated.current.localIndex,
+      });
+      // 暂停上一个动画
+      emitter.emit(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, {
+        uniqueId: uniqueId || HeaderEnum.HOT,
+        type: EVENTKEYENUM.ITEM_STOP,
+        index: oldIndex,
+      });
       // 算出一半的距离
       const half = (virtualTotal - 1) / 2;
       // 如果当前长度大于一半的长度
@@ -256,6 +282,7 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
         onPointerUp={up}
         className="slide slide-infinite"
         ref={verticalRef}
+        style={SlideVerticalStyle}
       >
         <div
           onPointerDown={pointStart}
@@ -265,11 +292,12 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
           ref={dropEl}
           className="slide-list flex-direction-column"
         >
+          {uniqueId}
           {list.map((item, index) => {
             return (
               <SlideItem key={index}>
                 {render(item, index === eventRelated.current.localIndex, {
-                  uniqueId: 'home',
+                  uniqueId: uniqueId || HeaderEnum.HOT,
                   index,
                 })}
               </SlideItem>

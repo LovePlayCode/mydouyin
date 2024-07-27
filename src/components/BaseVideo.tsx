@@ -5,8 +5,11 @@ import { IconPlayArrowFill } from '@arco-design/web-react/icon';
 import clsx from 'clsx';
 import ItemToolbar from './ItemToolbar';
 import ItemDesc from './ItemDesc';
-import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
-import { MediaEnum } from '@/common/contains';
+import emitter, {
+  EVENTKEYENUM,
+  type SingleClickBroadcastParams,
+} from '@/bus/eventBus';
+import { type HeaderEnum, MediaEnum } from '@/common/contains';
 import type { AwemeData } from '@/common/data';
 import { _css } from '@/utils/dom';
 import { _duration } from '@/utils';
@@ -16,16 +19,18 @@ interface BaseVideoProps {
 
   isplay: boolean;
   position?: {
-    uniqueId: string;
+    uniqueId: HeaderEnum;
     index: number;
   };
   item: AwemeData;
+  isLive?: boolean;
 }
 const BaseVideo: FC<BaseVideoProps> = ({
   videoUrl,
   item,
   isplay,
   position,
+  isLive = false,
 }) => {
   const [state, setState] = useSetState({
     status: isplay ? MediaEnum.PLAY : MediaEnum.PAUSE,
@@ -102,10 +107,16 @@ const BaseVideo: FC<BaseVideoProps> = ({
     videoEl.current?.pause();
   };
 
-  const click = ({ type, index }: { type: EVENTKEYENUM; index: number }) => {
-    if (position?.index === index) {
+  const click = ({ type, index, uniqueId }: SingleClickBroadcastParams) => {
+    debugger;
+    if (position?.index === index && position.uniqueId === uniqueId) {
       const { status } = state ?? {};
       if (type === EVENTKEYENUM.ITEM_TOGGLE) {
+        // 判断是否为直播状态
+        if (isLive) {
+          pause();
+          return;
+        }
         if (status === MediaEnum.PLAY) {
           pause();
         } else {
@@ -265,14 +276,22 @@ const BaseVideo: FC<BaseVideoProps> = ({
         <IconPlayArrowFill className="pause-icon" />
       )}
       <div className="float">
-        <div className="normal">
-          {state.iscommentVisible && (
-            <>
-              <ItemToolbar data={item} />
-              <ItemDesc data={item} />
-            </>
-          )}
-        </div>
+        {isLive ? (
+          <>
+            <div className="living">点击进入直播间</div>
+            <ItemDesc isLive={isLive} data={item} />
+          </>
+        ) : (
+          <div className="normal">
+            {state.iscommentVisible && (
+              <>
+                <ItemToolbar data={item} />
+                <ItemDesc isLive={isLive} data={item} />
+              </>
+            )}
+          </div>
+        )}
+
         {/* 进度条 */}
         <div
           className={clsx('progress', {

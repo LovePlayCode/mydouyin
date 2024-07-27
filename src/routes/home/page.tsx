@@ -3,6 +3,7 @@ import './index.less';
 import { useDeepCompareEffect, useSetState } from 'ahooks';
 import HomeContext from '../contexts/HomeContext';
 import Slide0 from './Slide0';
+import Slide2 from './Slide2';
 import SlideHorizontal from '@/components/SlideHorizontal';
 
 import BaseFooter from '@/components/BaseFooter';
@@ -10,6 +11,8 @@ import Comment from '@/components/comment';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 import Share from '@/components/Share';
 import IndicatorHome from '@/components/IndicatorHome';
+import SlideItem from '@/components/SlideItem';
+import LongVideo from '@/components/LongVideo';
 
 const Index = () => {
   const [state, setState] = useSetState({
@@ -77,7 +80,14 @@ const Index = () => {
               <div className="slide-item">
                 {!state.fullScreen && <IndicatorHome />}
                 <SlideHorizontal className="first-horizontal-item">
-                  <Slide0 />
+                  {/* 热点 tba */}
+                  {/* <Slide0 /> */}
+                  {/* 长视频 暂未实现 没找到抖音入口 */}
+                  {/* <SlideItem>
+                    <LongVideo />
+                  </SlideItem> */}
+                  {/* 关注 */}
+                  <Slide2 />
                 </SlideHorizontal>
                 <BaseFooter />
               </div>

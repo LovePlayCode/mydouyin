@@ -8,6 +8,7 @@ export enum MediaEnum {
  */
 export enum HeaderEnum {
   HOT = 'HOT',
+  LIVE = 'LIVE',
 }
 // 用于判断是垂直滑动还是水平滑动
 export enum SlideEnum {

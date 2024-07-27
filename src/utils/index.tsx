@@ -1,4 +1,5 @@
 import BaseVideo from '../components/BaseVideo';
+import type { HeaderEnum } from '@/common/contains';
 
 export function slideItemRender(props: any) {
   // , index, play, uniqueId
@@ -6,7 +7,7 @@ export function slideItemRender(props: any) {
     item: any,
     isplay: boolean,
     position: {
-      uniqueId: string;
+      uniqueId: HeaderEnum;
       index: number;
     },
   ) {
@@ -18,6 +19,7 @@ export function slideItemRender(props: any) {
             isplay={isplay}
             position={position}
             item={item}
+            {...props}
           />
         );
     }

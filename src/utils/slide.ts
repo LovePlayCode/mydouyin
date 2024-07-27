@@ -136,25 +136,26 @@ export function slideTouchEnd(
       // 3、若不在上述两种情况，那么只需要判断时间即可
       if (gapTime < 150) {
         // TODO: 优化逻辑
-        const oldIndex = state.localIndex;
-        if (
-          direction === SwiperDirectionEnum.Left ||
-          direction === SwiperDirectionEnum.Up
-        ) {
-          state.localIndex++;
-        } else {
-          state.localIndex--;
-        }
-        // 进行回调，触发事件
-        emitter.emit(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, {
-          type: EVENTKEYENUM.ITEM_PLAY,
-          index: state.localIndex,
-        });
-        // 暂停上一个动画
-        emitter.emit(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, {
-          type: EVENTKEYENUM.ITEM_STOP,
-          index: oldIndex,
-        });
+        // const oldIndex = state.localIndex;
+        // if (
+        //   direction === SwiperDirectionEnum.Left ||
+        //   direction === SwiperDirectionEnum.Up
+        // ) {
+        //   state.localIndex++;
+        // } else {
+        //   state.localIndex--;
+        // }
+        // // 进行回调，触发事件
+        // emitter.emit(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, {
+
+        //   type: EVENTKEYENUM.ITEM_PLAY,
+        //   index: state.localIndex,
+        // });
+        // // 暂停上一个动画
+        // emitter.emit(EVENTKEYENUM.SINGLE_CLICK_BROADCAST, {
+        //   type: EVENTKEYENUM.ITEM_STOP,
+        //   index: oldIndex,
+        // });
         // 下次刷新之际取消回调。
         nextCb?.(direction);
       }
