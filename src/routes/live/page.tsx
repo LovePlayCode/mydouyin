@@ -14,6 +14,7 @@ import more from '@/components/img/home/more.png';
 import love from '@/components/img/home/love.webp';
 import gift from '@/components/img/home/gift.webp';
 import addLight from '@/components/img/add-light.png';
+import Dom from '@/utils/dom';
 
 const Page = () => {
   // 父页面 Ref 实例
@@ -43,6 +44,9 @@ const Page = () => {
           behavior: 'smooth',
         });
       });
+      requestAnimationFrame(() => {
+        sendGift();
+      });
     }, 1500);
   });
   const sendComment = () => {
@@ -53,6 +57,46 @@ const Page = () => {
     setState({
       list: [...state.list],
     });
+  };
+  // 送礼物
+  const sendGift = () => {
+    const page = new Dom(pageRef.current);
+    const sendGift = new Dom().create(sendGiftTemplate());
+    sendGift.on('animationend', () => {
+      sendGift.remove();
+    });
+    const oldSendGift = new Dom('.send-gift');
+    let top = document.body.clientHeight * 0.6;
+    if (oldSendGift.els.length !== 0) {
+      top = sendGift.removePx(oldSendGift.css('top') as string) - 70;
+    }
+    // 防止没获取到值的情况
+    if (top < 100) {
+      top = document.body.clientHeight * 0.6;
+    }
+    sendGift.css('top', top);
+    page.append(sendGift);
+  };
+  // 送礼物模版
+  const sendGiftTemplate = () => {
+    return `<div class="send-gift">
+          <div class="left">
+            <img src="${avater1}" alt="" class="avatar">
+            <div class="desc">
+              <div class="name">谦男</div>
+              <div class="sendto">
+                <span class="send">送</span>
+                <span class="to">小心</span>
+              </div>
+            </div>
+            <div class="gift-wrapper">
+              <img src="${gift}" alt="" class="gift-icon">
+            </div>
+          </div>
+          <div class="right">
+            x 10000
+          </div>
+        </div>`;
   };
   const attention = () => {};
   const attentionOptionRef = useRef<HTMLDivElement>(null);

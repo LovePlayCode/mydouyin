@@ -292,7 +292,6 @@ const SlideVerticalInfinite: FC<SlideVerticalInfiniteProps> = ({
           ref={dropEl}
           className="slide-list flex-direction-column"
         >
-          {uniqueId}
           {list.map((item, index) => {
             return (
               <SlideItem key={index}>
