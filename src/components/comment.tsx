@@ -14,8 +14,9 @@ import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 
 interface CommentProps {
   pageId: string;
+  hide: () => any;
 }
-const Comment: FC<CommentProps> = ({ pageId }) => {
+const Comment: FC<CommentProps> = ({ pageId, hide }) => {
   const { modelValue, setModelValue } = useContext(HomeContext);
   const { data, loading } = useRequest(videoComments);
   return (
@@ -31,9 +32,7 @@ const Comment: FC<CommentProps> = ({ pageId }) => {
       maskMode="light"
       mode="white"
       height="calc(var(--vh, 1vh) * 70)"
-      hide={() => {
-        emitter.emit(EVENTKEYENUM.CLOSE_COMMENTS);
-      }}
+      hide={hide}
       tag="comment"
       header={
         <div className={styles.title}>

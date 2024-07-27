@@ -47,6 +47,14 @@ export type Events = {
    * 调出分享面板
    */
   [EVENTKEYENUM.SHOW_SHARE]: undefined | null;
+  /**
+   * 显示头部tab
+   */
+  [EVENTKEYENUM.ENTER_FULLSCREEN]: undefined | null;
+  /**
+   * 取消显示头部 tab
+   */
+  [EVENTKEYENUM.EXIT_FULLSCREEN]: undefined | null;
 };
 const emitter = mitt<Events>();
 

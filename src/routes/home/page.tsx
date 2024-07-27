@@ -1,4 +1,3 @@
-import { IconAlignLeft, IconSearch } from '@arco-design/web-react/icon';
 import './index.less';
 
 import { useDeepCompareEffect, useSetState } from 'ahooks';
@@ -10,19 +9,27 @@ import BaseFooter from '@/components/BaseFooter';
 import Comment from '@/components/comment';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 import Share from '@/components/Share';
+import IndicatorHome from '@/components/IndicatorHome';
 
 const Index = () => {
   const [state, setState] = useSetState({
     commentVisible: false,
     isSharing: false,
+    // 用来控制头部显示隐藏
+    fullScreen: false,
   });
-
+  // 关闭弹窗
+  const closeComments = () => {
+    emitter.emit(EVENTKEYENUM.EXIT_FULLSCREEN);
+    emitter.emit(EVENTKEYENUM.CLOSE_COMMENTS);
+  };
   useDeepCompareEffect(() => {
     // 注册打开评论事件
     emitter.on(EVENTKEYENUM.OPEN_COMMENTS, () => {
       setState({
         commentVisible: true,
       });
+      emitter.emit(EVENTKEYENUM.ENTER_FULLSCREEN);
     });
     // 注册打开分享面板
     emitter.on(EVENTKEYENUM.SHOW_SHARE, () => {
@@ -30,10 +37,28 @@ const Index = () => {
         isSharing: true,
       });
     });
+    // 注册头部 tab 展示
+    emitter.on(EVENTKEYENUM.ENTER_FULLSCREEN, () => {
+      setState({
+        fullScreen: true,
+      });
+    });
+
+    // 取消头部 tba 展示
+    emitter.on(EVENTKEYENUM.EXIT_FULLSCREEN, () => {
+      setState({
+        fullScreen: false,
+      });
+    });
     return () => {
       emitter.off(EVENTKEYENUM.OPEN_COMMENTS, () => {
         setState({
           commentVisible: true,
+        });
+      });
+      emitter.off(EVENTKEYENUM.ENTER_FULLSCREEN, () => {
+        setState({
+          fullScreen: true,
         });
       });
     };
@@ -50,49 +75,7 @@ const Index = () => {
               <div className="sidebar" style={{ display: 'none' }} />
               {/* 主题内容 */}
               <div className="slide-item">
-                <div className="indicator-home">
-                  <div className="notice">
-                    <span>下拉刷新内容</span>
-                  </div>
-                  <div className="toolbar">
-                    <div
-                      style={{
-                        width: '24rem',
-                        height: '24rem',
-                        fontSize: '24rem',
-                      }}
-                    >
-                      <IconAlignLeft style={{ fontSize: '24rem' }} />
-                    </div>
-                    <div className="tab-ctn">
-                      <div className="tabs">
-                        <div className="tab">
-                          <span>热点</span>
-                        </div>
-                        <div className="tab">
-                          <span>长视频</span>
-                        </div>
-                        <div className="tab">
-                          <span>关注</span>
-                        </div>
-                        <div className="tab">
-                          <span>经验</span>
-                        </div>
-                        <div className="tab">
-                          <span>推荐</span>
-                        </div>
-                      </div>
-                      <div className="indicator" />
-                    </div>
-                    {/* 搜索图标展示区域 */}
-                    <div
-                      style={{ width: '24rem', height: '24rem' }}
-                      className="searchIcon"
-                    >
-                      <IconSearch />
-                    </div>
-                  </div>
-                </div>
+                {!state.fullScreen && <IndicatorHome />}
                 <SlideHorizontal className="first-horizontal-item">
                   <Slide0 />
                 </SlideHorizontal>
@@ -101,7 +84,7 @@ const Index = () => {
             </div>
           </div>
           {/* 评论组件 */}
-          <Comment pageId="home-index" />
+          <Comment pageId="home-index" hide={closeComments} />
           {/* 分享组件 */}
           <Share
             modelValue={state?.isSharing}
