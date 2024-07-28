@@ -1,9 +1,10 @@
-import { FC, useContext, useRef } from 'react';
+import { FC, useContext, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { useMount } from 'ahooks';
 import { MouseEventState } from './SlideVerticalInfinite';
 import { SlideEnum, SwiperDirectionEnum } from '@/common/contains';
 import {
+  getSlideOffset,
   sildeTouchStart,
   slideInit,
   slideReset,
@@ -11,6 +12,7 @@ import {
   slideTouchMove,
 } from '@/utils/slide';
 import HomeContext from '@/routes/contexts/HomeContext';
+import { _css } from '@/utils/dom';
 
 interface SlideHorizontalProps {
   children: React.ReactNode;
@@ -53,6 +55,20 @@ const SlideHorizontal: FC<SlideHorizontalProps> = ({
     type: SlideEnum.HORIZONTAL,
     localIndex: index || 0,
   });
+  useEffect(() => {
+    // 判断当前 index 是否等于新的 index
+    if (state.current.localIndex !== index) {
+      state.current.localIndex = index;
+      _css(
+        slideListEl.current,
+        'transform',
+        `translate3d(${getSlideOffset(
+          state.current,
+          slideListEl.current!,
+        )}px, 0, 0)`,
+      );
+    }
+  }, [index]);
   const slideListEl = useRef<HTMLDivElement>(null);
   const pointerDown = (e: React.PointerEvent) => {
     if (slideListEl.current) {

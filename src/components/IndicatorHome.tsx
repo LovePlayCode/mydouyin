@@ -1,14 +1,10 @@
 import { IconAlignLeft, IconSearch } from '@arco-design/web-react/icon';
 import clsx from 'clsx';
-import { FC, useRef } from 'react';
-import {
-  useDeepCompareEffect,
-  useMount,
-  useReactive,
-  useUpdateEffect,
-} from 'ahooks';
+import { FC, useContext, useRef } from 'react';
+import { useDeepCompareEffect, useMount, useReactive } from 'ahooks';
 import { _css } from '@/utils/dom';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
+import HomeContext from '@/routes/contexts/HomeContext';
 
 interface IndicatorHomeProps {
   index: number;
@@ -26,6 +22,7 @@ const IndicatorHome: FC<IndicatorHomeProps> = ({ index, name }) => {
   });
   // 下方指示条
   const indicatorRef = useRef<HTMLDivElement>(null);
+  const { setNavIndex } = useContext(HomeContext);
   // tab 实例
   const tabs = useRef<HTMLDivElement>(null);
   const initTabs = () => {
@@ -48,6 +45,16 @@ const IndicatorHome: FC<IndicatorHomeProps> = ({ index, name }) => {
       _css(indicatorRef.current, 'left', `${state.lefts[index]}px`);
       console.log('state=-=', state);
     }
+  };
+  /**
+   *
+   * @param index 选择指定 tab index
+   */
+  const change = (index: number) => {
+    // 更新相关索引
+    setNavIndex(index);
+    _css(indicatorRef.current, 'transition-duration', `300ms`);
+    _css(indicatorRef.current, 'left', `${state.lefts[index]}px`);
   };
   console.log('外面索引==', index);
   const move = (e: number) => {
@@ -127,6 +134,9 @@ const IndicatorHome: FC<IndicatorHomeProps> = ({ index, name }) => {
         <div className="tab-ctn">
           <div className="tabs" ref={tabs}>
             <div
+              onClick={() => {
+                change(0);
+              }}
               className={clsx('tab', {
                 active: index === 0,
               })}
@@ -137,6 +147,9 @@ const IndicatorHome: FC<IndicatorHomeProps> = ({ index, name }) => {
               <span>长视频</span>
             </div> */}
             <div
+              onClick={() => {
+                change(1);
+              }}
               className={clsx('tab', {
                 active: index === 1,
               })}
