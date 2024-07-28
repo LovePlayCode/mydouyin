@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC, useContext, useRef } from 'react';
 import clsx from 'clsx';
 import { useMount } from 'ahooks';
 import { MouseEventState } from './SlideVerticalInfinite';
@@ -10,6 +10,7 @@ import {
   slideTouchEnd,
   slideTouchMove,
 } from '@/utils/slide';
+import HomeContext from '@/routes/contexts/HomeContext';
 
 interface SlideHorizontalProps {
   children: React.ReactNode;
@@ -22,6 +23,7 @@ const SlideHorizontal: FC<SlideHorizontalProps> = ({
   className,
   index,
 }) => {
+  const { setNavIndex } = useContext(HomeContext);
   // 关于事件的一些变量
   const state = useRef<MouseEventState>({
     isDbClick: false,
@@ -86,6 +88,7 @@ const SlideHorizontal: FC<SlideHorizontalProps> = ({
         } else {
           state.current.localIndex--;
         }
+        setNavIndex(state.current.localIndex);
       });
 
     // 重置

@@ -26,6 +26,9 @@ export enum EVENTKEYENUM {
   HIDE_MUTED_NOTICE = 'HIDE_MUTED_NOTICE',
   TOGGLE_CURRENT_VIDEO = 'TOGGLE_CURRENT_VIDEO',
   SHOW_AUDIO_CALL = 'SHOW_AUDIO_CALL',
+  SECOND_MOVEX = 'SECOND_MOVEX',
+  SECOND_MOVEY = 'SECOND_MOVEY',
+  SECOND_END = 'SECOND_END',
 }
 export type SingleClickBroadcastParams = {
   type: EVENTKEYENUM;
@@ -57,6 +60,12 @@ export type Events = {
    * 取消显示头部 tab
    */
   [EVENTKEYENUM.EXIT_FULLSCREEN]: undefined | null;
+  /**
+   * 头部tab 相关事件
+   */
+  [EVENTKEYENUM.SECOND_MOVEX]: number;
+  [EVENTKEYENUM.SECOND_MOVEY]: number;
+  [EVENTKEYENUM.SECOND_END]: number;
 };
 const emitter = mitt<Events>();
 

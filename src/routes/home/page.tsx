@@ -71,7 +71,15 @@ const Index = () => {
   return (
     <>
       <HomeContext.Provider
-        value={{ modelValue: state.commentVisible, setModelValue: setState }}
+        value={{
+          modelValue: state.commentVisible,
+          setModelValue: setState,
+          setNavIndex: (val: number) => {
+            setState({
+              navIndex: val,
+            });
+          },
+        }}
       >
         <div className="test-slide-wrapper" id="home-index">
           <div className="slide horizontal">
@@ -80,7 +88,9 @@ const Index = () => {
               <div className="sidebar" style={{ display: 'none' }} />
               {/* 主题内容 */}
               <div className="slide-item">
-                {!state.fullScreen && <IndicatorHome />}
+                {!state.fullScreen && (
+                  <IndicatorHome name="SECOND" index={state.navIndex} />
+                )}
                 <SlideHorizontal
                   name="second"
                   index={state.navIndex}

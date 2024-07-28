@@ -1,4 +1,5 @@
 import { _css } from './dom';
+import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 import { SlideEnum, SwiperDirectionEnum } from '@/common/contains';
 import type { MouseEventState } from '@/components/SlideVerticalInfinite';
 
@@ -75,6 +76,8 @@ export function slideTouchMove(
         let dx1 = 0;
         let dx2 = 0;
         if (state.type === SlideEnum.HORIZONTAL) {
+          // 触发移动事件
+          emitter.emit(EVENTKEYENUM.SECOND_MOVEX, state.move.x);
           dx1 = t + state.move.x;
         } else {
           dx2 = t + state.move.y;
@@ -182,6 +185,7 @@ export function slideReset(
   let dx2 = 0;
 
   if (state.type === SlideEnum.HORIZONTAL) {
+    emitter.emit(EVENTKEYENUM.SECOND_END, state.localIndex);
     dx1 = t;
   } else {
     dx2 = t;
