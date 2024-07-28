@@ -47,6 +47,10 @@ const Page = () => {
       requestAnimationFrame(() => {
         sendGift();
       });
+      // 横幅定时发送
+      requestAnimationFrame(() => {
+        sendBarrage();
+      });
     }, 1500);
   });
   const sendComment = () => {
@@ -77,7 +81,7 @@ const Page = () => {
     sendGift.css('top', top);
     page.append(sendGift);
   };
-  // 送礼物模版
+  // 生成 弹幕送礼物 相关元素
   const sendGiftTemplate = () => {
     return `<div class="send-gift">
           <div class="left">
@@ -97,6 +101,33 @@ const Page = () => {
             x 10000
           </div>
         </div>`;
+  };
+  // TODO: 有点 bug translateX有点问题  可以换一个移动方式 才可以解决这个 bug
+  const barrageTemplate = () => {
+    return `
+    <div class="barrage">
+      <div class="type">测试名称</div>
+      <div class="text">向下类精给每没较保十立铁马军。</div>
+    </div>
+    `;
+  };
+  // 中间横幅部分
+  const sendBarrage = () => {
+    const page = new Dom(pageRef.current);
+    const barrage = new Dom().create(barrageTemplate());
+    barrage.on('animationend', () => {
+      barrage.remove();
+    });
+    const oldBarrages = new Dom('.barrage');
+    let top = document.body.clientHeight * 0.35;
+    if (oldBarrages.els.length !== 0) {
+      top = barrage.removePx(oldBarrages.css('top') as string) + 20;
+    }
+    if (top > document.body.clientHeight * 0.5) {
+      top = document.body.clientHeight * 0.35;
+    }
+    barrage.css('top', top);
+    page.append(barrage);
   };
   const attention = () => {};
   const attentionOptionRef = useRef<HTMLDivElement>(null);
