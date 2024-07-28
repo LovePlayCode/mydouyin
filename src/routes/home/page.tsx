@@ -2,6 +2,7 @@ import './index.less';
 
 import { useDeepCompareEffect, useSetState } from 'ahooks';
 import HomeContext from '../contexts/HomeContext';
+import { useNav } from '../hooks/useNav';
 import Slide0 from './Slide0';
 import Slide2 from './Slide2';
 import SlideHorizontal from '@/components/SlideHorizontal';
@@ -23,6 +24,7 @@ const Index = () => {
     // tab 索引
     navIndex: 0,
   });
+  const nav = useNav();
   // 关闭弹窗
   const closeComments = () => {
     emitter.emit(EVENTKEYENUM.EXIT_FULLSCREEN);
@@ -48,7 +50,10 @@ const Index = () => {
         fullScreen: true,
       });
     });
-
+    // 注册路由相关事件
+    emitter.on(EVENTKEYENUM.NAV, ({ path, query }) => {
+      nav(path, query!);
+    });
     // 取消头部 tba 展示
     emitter.on(EVENTKEYENUM.EXIT_FULLSCREEN, () => {
       setState({

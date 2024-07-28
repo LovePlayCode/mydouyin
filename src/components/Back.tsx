@@ -10,6 +10,7 @@ interface BackProps {
   direction?: string;
   scale?: string;
   backClass?: string;
+  click?: (e?: React.MouseEvent<HTMLImageElement, MouseEvent>) => void;
 }
 const Back: FC<BackProps> = ({
   direction = 'left',
@@ -17,6 +18,7 @@ const Back: FC<BackProps> = ({
   mode = 'gray',
   img = 'back',
   backClass = '',
+  click,
 }) => {
   const imgEl = useRef<HTMLImageElement>(null);
   const [imgSrc, setImgSrc] = useState<string>('');
@@ -35,6 +37,9 @@ const Back: FC<BackProps> = ({
   });
   return (
     <img
+      onClick={e => {
+        click?.(e);
+      }}
       src={imgSrc}
       ref={imgEl}
       className={clsx(backClass, styles.imgWrapper, 'close')}

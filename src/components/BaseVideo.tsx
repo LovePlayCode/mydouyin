@@ -108,13 +108,13 @@ const BaseVideo: FC<BaseVideoProps> = ({
   };
 
   const click = ({ type, index, uniqueId }: SingleClickBroadcastParams) => {
-    debugger;
     if (position?.index === index && position.uniqueId === uniqueId) {
       const { status } = state ?? {};
       if (type === EVENTKEYENUM.ITEM_TOGGLE) {
-        // 判断是否为直播状态
+        // 判断是否为直播状态 如果是直播状态，暂停当前视频，跳转到直播间
         if (isLive) {
           pause();
+          emitter.emit(EVENTKEYENUM.NAV, { path: '/live' });
           return;
         }
         if (status === MediaEnum.PLAY) {

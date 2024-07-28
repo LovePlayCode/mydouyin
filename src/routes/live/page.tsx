@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useMount, useSetState } from 'ahooks';
+import { useNavigate } from '@modern-js/runtime/router';
 import styles from './page.module.less';
 import data from './data.json';
 import Back from '@/components/Back';
@@ -17,6 +18,7 @@ import addLight from '@/components/img/add-light.png';
 import Dom from '@/utils/dom';
 
 const Page = () => {
+  const navigate = useNavigate();
   // 父页面 Ref 实例
   const pageRef = useRef<HTMLDivElement>(null);
   // videoRef
@@ -189,7 +191,14 @@ const Page = () => {
               <img src={avater2} alt="" className="round" />
               <img src={avater2} alt="" className="round" />
               <div className="round count">107</div>
-              <Back backClass="round close" img="close" mode="light" />
+              <Back
+                click={() => {
+                  navigate(-1);
+                }}
+                backClass="round close"
+                img="close"
+                mode="light"
+              />
             </div>
             <div className="more">
               <div className="wrapper">

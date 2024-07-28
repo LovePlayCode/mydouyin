@@ -66,6 +66,7 @@ export type Events = {
   [EVENTKEYENUM.SECOND_MOVEX]: number;
   [EVENTKEYENUM.SECOND_MOVEY]: number;
   [EVENTKEYENUM.SECOND_END]: number;
+  [EVENTKEYENUM.NAV]: { path: string; query?: Record<string, any> };
 };
 const emitter = mitt<Events>();
 
