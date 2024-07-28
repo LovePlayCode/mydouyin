@@ -1,5 +1,4 @@
 import { _css } from './dom';
-import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 import { SlideEnum, SwiperDirectionEnum } from '@/common/contains';
 import type { MouseEventState } from '@/components/SlideVerticalInfinite';
 
@@ -56,6 +55,7 @@ export function slideTouchMove(
   const direction = getSwipeDirection(state.type, state.move);
   // 检测能否滑动
   const canSlideRes = canSlide(state);
+
   // TODO: 待判断第一个无法滑动问题
   if (canSlideRes) {
     // 判断是否可以继续滑动 如果用户传了，我就用他的，否则就用默认的。
@@ -157,6 +157,7 @@ export function slideTouchEnd(
         //   index: oldIndex,
         // });
         // 下次刷新之际取消回调。
+
         nextCb?.(direction);
       }
     }
@@ -176,6 +177,7 @@ export function slideReset(
   // 需要加过渡动画，让用户有一个流畅的体验
   _css(el, 'transition-duration', '300ms');
   const t = getSlideOffset(state, el);
+  debugger;
   let dx1 = 0;
   let dx2 = 0;
 
@@ -192,9 +194,26 @@ export function slideReset(
  * @param el
  * @returns 计算移动距离
  */
-export function getSlideOffset(state: MouseEventState, el: HTMLDivElement) {
+export function getSlideOffset(
+  state: MouseEventState,
+  el: HTMLElement | HTMLDivElement,
+) {
   // 判断如果是水平移动
   if (state.type === SlideEnum.HORIZONTAL) {
+    const widths: number[] = [];
+    const childrens = Array.from(el?.children) || [];
+    for (const child of childrens) {
+      widths.push(child.getBoundingClientRect()?.width);
+    }
+    // Array.from(el.children).map(v => {
+    //   widths.push(v.getBoundingClientRect().width);
+    // });
+    // 取0到当前index的子元素的宽度
+    const currentWidths = widths.slice(0, state.localIndex);
+    if (currentWidths.length) {
+      // 累计就是当前index之前所有页面的宽度
+      return -(currentWidths.reduce((a, b) => a + b) || 0);
+    }
     return 0;
   }
   if (state.type === SlideEnum.VERTICAL_INFINITE) {
@@ -219,6 +238,7 @@ export function getSlideOffset(state: MouseEventState, el: HTMLDivElement) {
   return 0;
 }
 export function canSlide(state: MouseEventState) {
+  console.log('state==', state.move);
   // 判断是否需要检测
   if (state.needCheck) {
     if (
@@ -243,4 +263,24 @@ export function canSlide(state: MouseEventState) {
  */
 export function canNext(isNext: boolean) {
   return !isNext;
+}
+/**
+ * 获取元素dom 长宽，子元素数量
+ */
+export function slideInit(el: HTMLElement, state: any) {
+  const height = _css(el, 'height');
+  const width = _css(el, 'width');
+  const { length } = el.children;
+  const t = getSlideOffset(state, el);
+  let dx1 = 0;
+  const dx2 = 0;
+  if (state.type === SlideEnum.HORIZONTAL) {
+    dx1 = t;
+  }
+  _css(el, 'transform', `translate3d(${dx1}px, ${dx2}px, 0)`);
+  return {
+    height,
+    width,
+    length,
+  };
 }

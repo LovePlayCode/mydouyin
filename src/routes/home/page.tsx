@@ -20,6 +20,8 @@ const Index = () => {
     isSharing: false,
     // 用来控制头部显示隐藏
     fullScreen: false,
+    // tab 索引
+    navIndex: 0,
   });
   // 关闭弹窗
   const closeComments = () => {
@@ -79,9 +81,13 @@ const Index = () => {
               {/* 主题内容 */}
               <div className="slide-item">
                 {!state.fullScreen && <IndicatorHome />}
-                <SlideHorizontal className="first-horizontal-item">
+                <SlideHorizontal
+                  name="second"
+                  index={state.navIndex}
+                  className="first-horizontal-item"
+                >
                   {/* 热点 tba */}
-                  {/* <Slide0 /> */}
+                  <Slide0 />
                   {/* 长视频 暂未实现 没找到抖音入口 */}
                   {/* <SlideItem>
                     <LongVideo />
