@@ -1,7 +1,12 @@
 import { IconAlignLeft, IconSearch } from '@arco-design/web-react/icon';
 import clsx from 'clsx';
 import { FC, useRef } from 'react';
-import { useMount, useReactive } from 'ahooks';
+import {
+  useDeepCompareEffect,
+  useMount,
+  useReactive,
+  useUpdateEffect,
+} from 'ahooks';
 import { _css } from '@/utils/dom';
 import emitter, { EVENTKEYENUM } from '@/bus/eventBus';
 
@@ -44,8 +49,9 @@ const IndicatorHome: FC<IndicatorHomeProps> = ({ index, name }) => {
       console.log('state=-=', state);
     }
   };
+  console.log('外面索引==', index);
   const move = (e: number) => {
-    debugger;
+    console.log('当前索引==', index);
     _css(indicatorRef.current, 'transition-duration', `0ms`);
     _css(
       indicatorRef.current,
@@ -67,6 +73,24 @@ const IndicatorHome: FC<IndicatorHomeProps> = ({ index, name }) => {
   };
   useMount(() => {
     initTabs();
+    // if (name === 'SECOND') {
+    //   emitter.on(EVENTKEYENUM.SECOND_MOVEX, move);
+    //   emitter.on(EVENTKEYENUM.SECOND_MOVEY, y => {
+    //     state.moveY = y;
+    //   });
+    //   emitter.on(EVENTKEYENUM.SECOND_END, end);
+    // }
+    // return () => {
+    //   if (name === 'SECOND') {
+    //     emitter.off(EVENTKEYENUM.SECOND_MOVEX, move);
+    //     emitter.off(EVENTKEYENUM.SECOND_MOVEY, y => {
+    //       state.moveY = y;
+    //     });
+    //     emitter.off(EVENTKEYENUM.SECOND_END, end);
+    //   }
+    // };
+  });
+  useDeepCompareEffect(() => {
     if (name === 'SECOND') {
       emitter.on(EVENTKEYENUM.SECOND_MOVEX, move);
       emitter.on(EVENTKEYENUM.SECOND_MOVEY, y => {
@@ -83,7 +107,7 @@ const IndicatorHome: FC<IndicatorHomeProps> = ({ index, name }) => {
         emitter.off(EVENTKEYENUM.SECOND_END, end);
       }
     };
-  });
+  }, [state, index]);
 
   return (
     <div className="indicator-home">
